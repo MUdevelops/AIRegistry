@@ -1,0 +1,124 @@
+{
+ "components": [
+  {
+   "category": "agent",
+   "dependencies": [
+    "memory (optional)"
+   ],
+   "description": "Minimal tool-calling agent loop with a pluggable planner.",
+   "files": [
+    "README.md",
+    "src/agent.py"
+   ],
+   "license": "MIT",
+   "name": "agent",
+   "runtime": "python",
+   "sha256": {
+    "README.md": "a10e7f4c33f223feba023de6b670fd82e6b594049fbd11b22ff6384d7570b8cd",
+    "src/agent.py": "c20025d173ccb60e8e61440a08955031abea207e680979f92e10c1e18640e065"
+   },
+   "source": "registry/agent",
+   "tags": [
+    "agent",
+    "tools",
+    "loop"
+   ],
+   "version": "0.1.0"
+  },
+  {
+   "category": "template",
+   "dependencies": [],
+   "description": "Minimal rule-based chat loop; plug in any model client.",
+   "files": [
+    "README.md",
+    "src/chat.py"
+   ],
+   "license": "MIT",
+   "name": "chat",
+   "runtime": "python",
+   "sha256": {
+    "README.md": "498f0209ff95b3f9dddc3805a00ca126e4028c1e4aed1c03101d1e6936f53ce1",
+    "src/chat.py": "ab80e6213504d6b17ccb7a574905950de8258b1f0e79c6f2bb8678918d4f9a70"
+   },
+   "source": "registry/chat",
+   "tags": [
+    "chat",
+    "cli",
+    "starter"
+   ],
+   "version": "0.1.0"
+  },
+  {
+   "category": "tool",
+   "dependencies": [],
+   "description": "Format numbered source citations for generated text.",
+   "files": [
+    "README.md",
+    "src/citations.py"
+   ],
+   "license": "MIT",
+   "name": "citations",
+   "runtime": "python",
+   "sha256": {
+    "README.md": "7bc87656f7a165d347064615b9affe1d9300972526e3c980e982f094ba4e27cf",
+    "src/citations.py": "0cfcaa465d88115e7e139c1e9bb1bdc3db50ac5c096591ac1a38e1fc4b32a471"
+   },
+   "source": "registry/citations",
+   "tags": [
+    "citations",
+    "sources",
+    "rag"
+   ],
+   "version": "0.1.0"
+  },
+  {
+   "category": "tool",
+   "dependencies": [],
+   "description": "JSON-file memory store with substring search.",
+   "files": [
+    "README.md",
+    "src/memory.py"
+   ],
+   "license": "MIT",
+   "name": "memory",
+   "runtime": "python",
+   "sha256": {
+    "README.md": "94082a17187c61faacdd6e0cc3e35acbef92215baabaf7f125404059f1ebf38d",
+    "src/memory.py": "79b50ecd284477ebfdc326f7548ce05c0f2a4bb5667870949295c2b95ef6f649"
+   },
+   "source": "registry/memory",
+   "tags": [
+    "memory",
+    "storage",
+    "json"
+   ],
+   "version": "0.1.0"
+  },
+  {
+   "category": "workflow",
+   "dependencies": [
+    "citations (optional)"
+   ],
+   "description": "Tiny keyword retriever returning context for a query.",
+   "files": [
+    "README.md",
+    "src/rag.py"
+   ],
+   "license": "MIT",
+   "name": "rag",
+   "runtime": "python",
+   "sha256": {
+    "README.md": "cb343c0aaa80e32200f12e434452c14dde61c9189c0d5e6fb04d79b19eb7e1a8",
+    "src/rag.py": "71bb6acf55f487c802edcbac01dc6782b9092db3ead126decc10830cc9516c12"
+   },
+   "source": "registry/rag",
+   "tags": [
+    "rag",
+    "retrieval",
+    "search"
+   ],
+   "version": "0.1.0"
+  }
+ ],
+ "version": 1
+}

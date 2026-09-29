@@ -1,0 +1,12 @@
+{
+ "name": "agent",
+ "version": "0.1.0",
+ "description": "Minimal tool-calling agent loop with a pluggable planner.",
+ "category": "agent",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": ["agent","tools","loop"],
+ "files": ["README.md", "src/agent.py"],
+ "dependencies": ["memory (optional)"],
+ "source": "registry/agent"
+}

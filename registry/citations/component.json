@@ -1,0 +1,12 @@
+{
+ "name": "citations",
+ "version": "0.1.0",
+ "description": "Format numbered source citations for generated text.",
+ "category": "tool",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": ["citations","sources","rag"],
+ "files": ["README.md", "src/citations.py"],
+ "dependencies": [],
+ "source": "registry/citations"
+}

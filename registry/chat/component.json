@@ -1,0 +1,12 @@
+{
+ "name": "chat",
+ "version": "0.1.0",
+ "description": "Minimal rule-based chat loop; plug in any model client.",
+ "category": "template",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": ["chat","cli","starter"],
+ "files": ["README.md", "src/chat.py"],
+ "dependencies": [],
+ "source": "registry/chat"
+}

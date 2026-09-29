@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIRegistry</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><a class="logo" href="#/">AI<b>Registry</b></a><span id="auth"></span></header>
+<main>
+<section id="home">
+<h1>Reusable AI components, one command away.</h1>
+<p>An open-source registry and CLI for reusable AI components, agents, tools, workflows and project templates.</p>
+<pre>$ ai search rag
+$ ai add rag</pre>
+<input id="q" type="search" placeholder="Search components, tags..." aria-label="Search components">
+<div id="cats"></div><div id="grid">Loading...</div>
+</section>
+<section id="detail" hidden></section>
+</main>
+<script src="config/public.js"></script><script src="app.js"></script>
+</body></html>
