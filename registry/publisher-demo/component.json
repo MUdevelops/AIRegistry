@@ -1,0 +1,27 @@
+{
+  "name": "publisher-demo",
+  "version": "1.0.0",
+  "description": "Tests the AIRegistry publisher with dependencies and multiple files.",
+  "category": "tool",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": [
+    "ai",
+    "publisher",
+    "test"
+  ],
+  "dependencies": [
+    "memory"
+  ],
+  "files": [
+    "README.md",
+    "src/helper.py",
+    "src/main.py"
+  ],
+  "sha256": {
+    "README.md": "3286e9201878d648b6089d0a8f543cf959ac278f5703944720f7435bb690744f",
+    "src/main.py": "bcdfaa25023a1349fec9a3631b0e01684e4a4cf7f28b3255ed91c58d0281515e",
+    "src/helper.py": "b0560647cbdfae8180e99f5cf64329a3ad4d39f428c1a78581ee08b90bcdcf93"
+  },
+  "source": "registry/publisher-demo"
+}
