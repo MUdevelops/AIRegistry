@@ -792,6 +792,9 @@ function validateSubmission(input) {
   const runtime = input.runtime;
   const license = input.license;
   const tags = input.tags;
+  const dependencies = Array.isArray(input.dependencies)
+  ? input.dependencies
+  : [];
   const files = input.files;
 
   if (!isSafeComponentName(name)) {
@@ -852,12 +855,38 @@ function validateSubmission(input) {
     };
   }
 
-  if (!Array.isArray(tags) || tags.length > 12) {
-    return {
-      ok: false,
-      error: "invalid_tags"
-    };
-  }
+  if (dependencies.length > 20) {
+  return {
+    ok: false,
+    error: "invalid_dependencies"
+  };
+}
+
+if (
+  !dependencies.every(
+    (dependency) =>
+      typeof dependency === "string" &&
+      /^[a-z0-9][a-z0-9-]{1,39}( \(optional\))?$/.test(
+        dependency
+      )
+  )
+) {
+  return {
+    ok: false,
+    error: "invalid_dependencies"
+  };
+}
+
+const dependencyNames = dependencies.map((dependency) =>
+  dependency.replace(/ \(optional\)$/, "")
+);
+
+if (new Set(dependencyNames).size !== dependencyNames.length) {
+  return {
+    ok: false,
+    error: "duplicate_dependencies"
+  };
+}
 
   if (
     !tags.every(
@@ -964,14 +993,15 @@ function validateSubmission(input) {
   return {
     ok: true,
     value: {
-      name,
-      version,
-      description,
-      category,
-      runtime,
-      license,
-      tags: [...new Set(tags)].sort(),
-      files
+        name,
+        version,
+        description,
+        category,
+        runtime,
+        license,
+        tags: [...new Set(tags)].sort(),
+        dependencies: [...dependencies].sort(),
+        files
     }
   };
 }
@@ -1185,7 +1215,7 @@ async function handlePublisherSubmit(request, env) {
       runtime: component.runtime,
       license: component.license,
       tags: component.tags,
-      dependencies: [],
+      dependencies: component.dependencies,
       files: component.files
         .map((f) => f.path)
         .sort(),
