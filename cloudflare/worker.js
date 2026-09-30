@@ -353,13 +353,389 @@ async function handleAuth(request, env) {
   });
 }
 
+function bytesToBase64Url(bytes) {
+  return btoa(String.fromCharCode(...new Uint8Array(bytes)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+}
+
+function base64ToBytes(value) {
+  const padded =
+    value.replace(/-/g, "+").replace(/_/g, "/") +
+    "=".repeat((4 - (value.length % 4)) % 4);
+
+  const raw = atob(padded);
+
+  return Uint8Array.from(raw, (c) => c.charCodeAt(0));
+}
+
+function derLength(length) {
+  if (length < 128) return Uint8Array.of(length);
+
+  const bytes = [];
+
+  while (length > 0) {
+    bytes.unshift(length & 255);
+    length >>>= 8;
+  }
+
+  return Uint8Array.of(0x80 | bytes.length, ...bytes);
+}
+
+function derSequence(...parts) {
+  const total = parts.reduce((n, p) => n + p.length, 0);
+  const out = new Uint8Array(
+    1 + derLength(total).length + total
+  );
+
+  let o = 0;
+
+  out[o++] = 0x30;
+
+  const len = derLength(total);
+  out.set(len, o);
+  o += len.length;
+
+  for (const part of parts) {
+    out.set(part, o);
+    o += part.length;
+  }
+
+  return out;
+}
+
+function derIntegerZero() {
+  return Uint8Array.of(0x02, 0x01, 0x00);
+}
+
+function derOidRsaEncryption() {
+  return Uint8Array.of(
+    0x30, 0x0d,
+    0x06, 0x09,
+    0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01,
+    0x05, 0x00
+  );
+}
+
+function derOctetString(bytes) {
+  const len = derLength(bytes.length);
+
+  const out = new Uint8Array(
+    1 + len.length + bytes.length
+  );
+
+  out[0] = 0x04;
+  out.set(len, 1);
+  out.set(bytes, 1 + len.length);
+
+  return out;
+}
+
+function rsaPkcs1ToPkcs8(pkcs1) {
+  return derSequence(
+    derIntegerZero(),
+    derOidRsaEncryption(),
+    derOctetString(pkcs1)
+  );
+}
+
+function pemToDer(pem) {
+  const clean = pem
+    .replace(/\\n/g, "\n")
+    .replace(/-----BEGIN [^-]+-----/g, "")
+    .replace(/-----END [^-]+-----/g, "")
+    .replace(/\s+/g, "");
+
+  return base64ToBytes(clean);
+}
+
+async function importGitHubPrivateKey(pem) {
+  const der = pemToDer(pem);
+
+  const isPkcs1 =
+    pem.includes("BEGIN RSA PRIVATE KEY");
+
+  const pkcs8 = isPkcs1
+    ? rsaPkcs1ToPkcs8(der)
+    : der;
+
+  return crypto.subtle.importKey(
+    "pkcs8",
+    pkcs8,
+    {
+      name: "RSASSA-PKCS1-v1_5",
+      hash: "SHA-256"
+    },
+    false,
+    ["sign"]
+  );
+}
+
+async function createGitHubAppJwt(env) {
+  if (
+    !env.GITHUB_APP_ID ||
+    !env.GITHUB_APP_PRIVATE_KEY
+  ) {
+    throw new Error("GitHub App credentials are missing.");
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+
+  const header = bytesToBase64Url(
+    new TextEncoder().encode(
+      JSON.stringify({
+        alg: "RS256",
+        typ: "JWT"
+      })
+    )
+  );
+
+  const payload = bytesToBase64Url(
+    new TextEncoder().encode(
+      JSON.stringify({
+        iat: now - 60,
+        exp: now + 540,
+        iss: String(env.GITHUB_APP_ID)
+      })
+    )
+  );
+
+  const message = `${header}.${payload}`;
+
+  const key = await importGitHubPrivateKey(
+    env.GITHUB_APP_PRIVATE_KEY
+  );
+
+  const signature = await crypto.subtle.sign(
+    "RSASSA-PKCS1-v1_5",
+    key,
+    new TextEncoder().encode(message)
+  );
+
+  return `${message}.${bytesToBase64Url(signature)}`;
+}
+
+async function githubApi(path, options = {}) {
+  const headers = new Headers(options.headers || {});
+
+  headers.set(
+    "Accept",
+    "application/vnd.github+json"
+  );
+
+  headers.set(
+    "X-GitHub-Api-Version",
+    "2026-03-10"
+  );
+
+  headers.set(
+    "User-Agent",
+    "AIRegistry"
+  );
+
+  return fetch(
+    `https://api.github.com${path}`,
+    {
+      ...options,
+      headers
+    }
+  );
+}
+
+async function getInstallationToken(env) {
+  const jwt = await createGitHubAppJwt(env);
+
+  const response = await githubApi(
+    `/app/installations/${encodeURIComponent(
+      env.GITHUB_APP_INSTALLATION_ID
+    )}/access_tokens`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        repositories: [env.GITHUB_REPO_NAME],
+        permissions: {
+          contents: "write",
+          pull_requests: "write"
+        }
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+
+    throw new Error(
+      `GitHub installation token failed (${response.status}): ${text.slice(0, 300)}`
+    );
+  }
+
+  const data = await response.json();
+
+  if (!data.token) {
+    throw new Error(
+      "GitHub installation token was not returned."
+    );
+  }
+
+  return data.token;
+}
+
+async function getAuthenticatedAiRegistryUser(
+  request,
+  env
+) {
+  const session = getCookie(request, "s");
+
+  if (!session) return null;
+
+  const parts = session.split(".");
+
+  if (parts.length !== 3) return null;
+
+  const identity = parts[0];
+  const expires = Number(parts[1]);
+  const signature = parts[2];
+
+  if (
+    !identity ||
+    !Number.isSafeInteger(expires) ||
+    expires <= Math.floor(Date.now() / 1000)
+  ) {
+    return null;
+  }
+
+  const valid = await verify(
+    `${identity}.${expires}`,
+    signature,
+    env.SESSION_SECRET
+  );
+
+  if (!valid) return null;
+
+  return {
+    login: decodeURIComponent(identity),
+    expires
+  };
+}
+
+async function handlePublisherStatus(request, env) {
+  const user =
+    await getAuthenticatedAiRegistryUser(
+      request,
+      env
+    );
+
+  if (!user) {
+    return response(
+      JSON.stringify({
+        error: "authentication_required"
+      }),
+      401,
+      {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      }
+    );
+  }
+
+  if (
+    !env.GITHUB_APP_ID ||
+    !env.GITHUB_APP_INSTALLATION_ID ||
+    !env.GITHUB_APP_PRIVATE_KEY ||
+    !env.GITHUB_REPO_OWNER ||
+    !env.GITHUB_REPO_NAME
+  ) {
+    return response(
+      JSON.stringify({
+        error: "publisher_not_configured"
+      }),
+      503,
+      {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      }
+    );
+  }
+
+  try {
+    const token =
+      await getInstallationToken(env);
+
+    const repo = await githubApi(
+      `/repos/${encodeURIComponent(
+        env.GITHUB_REPO_OWNER
+      )}/${encodeURIComponent(
+        env.GITHUB_REPO_NAME
+      )}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!repo.ok) {
+      return response(
+        JSON.stringify({
+          error: "repository_access_failed",
+          status: repo.status
+        }),
+        502,
+        {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        }
+      );
+    }
+
+    const data = await repo.json();
+
+    return response(
+      JSON.stringify({
+        ok: true,
+        user: user.login,
+        repository: `${env.GITHUB_REPO_OWNER}/${env.GITHUB_REPO_NAME}`,
+        app_access: true,
+        default_branch: data.default_branch
+      }),
+      200,
+      {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      }
+    );
+  } catch (error) {
+    return response(
+      JSON.stringify({
+        error: "publisher_check_failed",
+        message: String(error.message || error)
+          .slice(0, 300)
+      }),
+      502,
+      {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      }
+    );
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
     if (url.pathname.startsWith("/auth/")) {
-      return handleAuth(request, env);
-    }
+  	return handleAuth(request, env);
+	}
+
+    if (url.pathname === "/api/publisher/status") {
+  	return handlePublisherStatus(request, env);
+	}
 
     return env.ASSETS.fetch(request);
   }

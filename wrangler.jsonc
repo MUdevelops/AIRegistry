@@ -7,8 +7,11 @@
     "directory": "./website",
     "binding": "ASSETS"
   },
-  "vars": {
-    "SITE_URL": "https://airegistry.instantregret96.workers.dev",
-    "GITHUB_REDIRECT_URI": "https://airegistry.instantregret96.workers.dev/auth/callback"
+
+   "vars": {
+  "SITE_URL": "https://airegistry.instantregret96.workers.dev",
+  "GITHUB_REDIRECT_URI": "https://airegistry.instantregret96.workers.dev/auth/callback",
+  "GITHUB_REPO_OWNER": "MUdevelops",
+  "GITHUB_REPO_NAME": "AIRegistry"
   }
 }
