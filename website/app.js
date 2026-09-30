@@ -244,7 +244,7 @@ async function submitComponent(event) {
 $("q").oninput = render;
 
 $("submit-component").onclick = () => {
-  location.hash = "submit";
+  location.hash = "/submit";
 };
 
 $("submit-form").addEventListener("submit", submitComponent);
