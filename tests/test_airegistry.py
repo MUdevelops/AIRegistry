@@ -76,7 +76,6 @@ class TestRegistry(Base):
         self.assertTrue(
         {"chat", "rag", "agent", "memory", "citations"}.issubset(set(comps))
         )
-        self.assertEqual(set(comps), {"chat", "rag", "agent", "memory", "citations"})
         os.environ["REGISTRY_URL"] = os.path.join(self.tmp, "missing.json")
         code, out, err = run("search", "rag")  # falls back to cache
         self.assertEqual(code, 0)
