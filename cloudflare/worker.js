@@ -986,7 +986,35 @@ async function sha256Hex(value) {
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 }
+function sortKeysDeep(value) {
+  if (Array.isArray(value)) {
+    return value.map(sortKeysDeep);
+  }
 
+  if (value && typeof value === "object") {
+    const out = {};
+
+    for (const key of Object.keys(value).sort()) {
+      out[key] = sortKeysDeep(value[key]);
+    }
+
+    return out;
+  }
+
+  return value;
+}
+
+function escapeNonAsciiJson(value) {
+  return value.replace(/[\u007f-\uffff]/g, (char) => {
+    return "\\u" + char.charCodeAt(0).toString(16).padStart(4, "0");
+  });
+}
+
+function canonicalRegistryJson(value) {
+  const sorted = sortKeysDeep(value);
+  const json = JSON.stringify(sorted, null, 1);
+  return escapeNonAsciiJson(json) + "\n";
+}
 async function getMainRegistry(env, token) {
   const owner =
     encodeURIComponent(env.GITHUB_REPO_OWNER);
@@ -1172,8 +1200,7 @@ async function handlePublisherSubmit(request, env) {
         a.name.localeCompare(b.name)
     );
 
-    const registryText =
-      JSON.stringify(registry, null, 2) + "\n";
+    const registryText = canonicalRegistryJson(registry);
 
     const websiteRegistryText = registryText;
 
@@ -1482,19 +1509,20 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname.startsWith("/auth/")) {
-  	return handleAuth(request, env);
-	}
+      return handleAuth(request, env);
+    }
 
     if (url.pathname === "/api/publisher/status") {
-  	return handlePublisherStatus(request, env);
+      return handlePublisherStatus(request, env);
     }
 
     if (
-  	url.pathname === "/api/publisher/submit" &&
-  	request.method === "POST"
-	) {
- 	 return handlePublisherSubmit(request, env);
-	}
+      url.pathname === "/api/publisher/submit" &&
+      request.method === "POST"
+    ) {
+      return handlePublisherSubmit(request, env);
+    }
 
     return env.ASSETS.fetch(request);
+  }
 };
