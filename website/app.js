@@ -21,19 +21,24 @@ function card(m) {
     h(
       "div",
       {},
-      ...m.tags.map((t) => h("span", { className: "tag" }, t))
+      ...(m.tags || []).map((t) =>
+        h("span", { className: "tag" }, t)
+      )
     )
   );
 }
 
 function render() {
-  const q = $("q").value.toLowerCase().split(/\s+/).filter(Boolean);
+  const q = $("q").value
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
 
   const list = all.filter(
     (m) =>
       (!cat || m.category === cat) &&
       q.every((t) =>
-        [m.name, m.description, m.category, ...m.tags]
+        [m.name, m.description, m.category, ...(m.tags || [])]
           .join(" ")
           .toLowerCase()
           .includes(t)
@@ -41,7 +46,10 @@ function render() {
   );
 
   $("grid").replaceChildren(
-    ...(list.length ? list.map(card) : [h("p", {}, "No matches.")])
+    ...(list.length
+      ? list.map(card)
+      : [h("p", {}, "No matches.")]
+    )
   );
 
   const cats = ["", ...new Set(all.map((m) => m.category))].sort();
@@ -68,9 +76,9 @@ function detail(m) {
     ["Category", m.category],
     ["Runtime", m.runtime],
     ["License", m.license],
-    ["Tags", m.tags.join(", ")],
+    ["Tags", (m.tags || []).join(", ")],
     ["Dependencies", (m.dependencies || []).join(", ") || "none"],
-    ["Files", m.files.join(", ")],
+    ["Files", (m.files || []).join(", ")],
     ["Source", m.source]
   ];
 
@@ -91,15 +99,22 @@ function detail(m) {
 }
 
 function route() {
-  const path = location.hash.slice(2);
+  const path = location.hash.slice(1);
 
-  const m = all.find((x) => x.name === path);
+  if (path === "/submit") {
+    $("home").hidden = true;
+    $("detail").hidden = true;
+    $("submit").hidden = false;
+    return;
+  }
 
-  const showSubmit = path === "submit";
+  const m = all.find(
+    (x) => x.name === location.hash.slice(2)
+  );
 
-  $("home").hidden = !!m || showSubmit;
+  $("home").hidden = !!m;
   $("detail").hidden = !m;
-  $("submit").hidden = !showSubmit;
+  $("submit").hidden = true;
 
   if (m) {
     detail(m);
@@ -108,6 +123,7 @@ function route() {
 
 async function renderAuth() {
   const box = $("auth");
+
   if (!box) return;
 
   box.replaceChildren();
@@ -180,9 +196,10 @@ async function submitComponent(event) {
 
   if (!authUser) {
     status.textContent = "Please sign in with GitHub first.";
-    location.hash = "";
+
     window.location.href =
       (C.AUTH_URL || "/auth").replace(/\/$/, "") + "/login";
+
     return;
   }
 
@@ -197,6 +214,7 @@ async function submitComponent(event) {
     runtime: $("component-runtime").value.trim(),
     license: $("component-license").value.trim(),
     tags: csvTags($("component-tags").value),
+
     files: [
       {
         path: "README.md",
@@ -210,31 +228,48 @@ async function submitComponent(event) {
   };
 
   try {
-    const response = await fetch("/api/publisher/submit", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    const response = await fetch(
+      "/api/publisher/submit",
+      {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || data.error || "Submission failed.");
+      throw new Error(
+        data.message ||
+        data.error ||
+        "Submission failed."
+      );
     }
 
     status.textContent =
-      "Submitted successfully. Pull Request: " +
-      (data.pull_request || "created");
+      "Submitted successfully. Pull Request created.";
 
     event.target.reset();
 
+    if (data.pull_request) {
+      const link = document.createElement("a");
+
+      link.href = data.pull_request;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = " Open Pull Request";
+
+      status.appendChild(link);
+    }
   } catch (error) {
     status.textContent =
-      error.message || "Could not submit component.";
+      error.message ||
+      "Could not submit component.";
   } finally {
     button.disabled = false;
     button.textContent = "Submit for Review";
@@ -245,19 +280,29 @@ $("q").oninput = render;
 
 $("submit-component").onclick = () => {
   location.hash = "/submit";
+  route();
 };
 
-$("submit-form").addEventListener("submit", submitComponent);
+$("submit-form").addEventListener(
+  "submit",
+  submitComponent
+);
 
 window.onhashchange = route;
 
 fetch(C.REGISTRY_URL || "registry.json")
   .then((r) => {
-    if (!r.ok) throw new Error("registry");
+    if (!r.ok) {
+      throw new Error("registry");
+    }
+
     return r.json();
   })
   .then((d) => {
-    all = Array.isArray(d.components) ? d.components : [];
+    all = Array.isArray(d.components)
+      ? d.components
+      : [];
+
     render();
     route();
   })
