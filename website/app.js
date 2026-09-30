@@ -222,6 +222,30 @@ function csvTags(value) {
 
 /* ---------------- Dependencies ---------------- */
 
+function renderDependencyOptions() {
+  let datalist = $("registry-dependencies");
+
+  if (!datalist) {
+    datalist = document.createElement("datalist");
+    datalist.id = "registry-dependencies";
+    document.body.appendChild(datalist);
+  }
+
+  const currentName =
+    $("component-name")?.value.trim().toLowerCase() || "";
+
+  datalist.replaceChildren(
+    ...all
+      .filter((m) => m.name !== currentName)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((m) =>
+        h("option", {
+          value: m.name
+        })
+      )
+  );
+}
+
 function addDependency(value = "") {
   const row = h(
     "div",
@@ -234,7 +258,8 @@ function addDependency(value = "") {
     "input",
     {
       className: "dependency-input",
-      placeholder: "component-name",
+      list: "registry-dependencies",
+      placeholder: "Select or type a component",
       value
     }
   );
@@ -272,9 +297,7 @@ function addDependency(value = "") {
 
 function collectDependencies() {
   return [
-    ...document.querySelectorAll(
-      ".dependency-row"
-    )
+    ...document.querySelectorAll(".dependency-row")
   ]
     .map((row) => {
       const input =
@@ -285,9 +308,8 @@ function collectDependencies() {
           'input[type="checkbox"]'
         );
 
-      const name = input.value
-        .trim()
-        .toLowerCase();
+      const name =
+        input.value.trim().toLowerCase();
 
       if (!name) return "";
 
@@ -297,7 +319,6 @@ function collectDependencies() {
     })
     .filter(Boolean);
 }
-
 
 /* ---------------- Files ---------------- */
 
@@ -404,6 +425,37 @@ async function submitComponent(event) {
 
   const files = collectFiles();
 
+  const dependencies = collectDependencies();
+
+const currentName =
+  $("component-name").value.trim().toLowerCase();
+
+const dependencyNames = dependencies.map((dependency) =>
+  dependency.replace(/ \(optional\)$/, "")
+);
+
+const duplicateDependencies =
+  new Set(dependencyNames).size !== dependencyNames.length;
+
+if (duplicateDependencies) {
+  status.textContent =
+    "Duplicate dependencies are not allowed.";
+  return;
+}
+
+for (const dependency of dependencyNames) {
+  if (dependency === currentName) {
+    status.textContent =
+      "A component cannot depend on itself.";
+    return;
+  }
+
+  if (!all.some((m) => m.name === dependency)) {
+    status.textContent =
+      `Dependency '${dependency}' was not found in the registry.`;
+    return;
+  }
+}
   const readme = files.find(
     (file) => file.path === "README.md"
   );
@@ -460,8 +512,7 @@ async function submitComponent(event) {
       $("component-tags").value
     ),
 
-    dependencies:
-      collectDependencies(),
+    dependencies,
 
     files
   };
@@ -538,6 +589,11 @@ async function submitComponent(event) {
 
 $("q").oninput = render;
 
+$("component-name").addEventListener(
+  "input",
+  renderDependencyOptions
+);
+
 $("submit-component").onclick = () => {
   location.hash = "/submit";
   route();
@@ -587,13 +643,14 @@ fetch(
     return r.json();
   })
   .then((d) => {
-    all = Array.isArray(d.components)
-      ? d.components
-      : [];
+  all = Array.isArray(d.components)
+    ? d.components
+    : [];
 
-    render();
-    route();
-  })
+  renderDependencyOptions();
+  render();
+  route();
+})
   .catch(() => {
     $("grid").textContent =
       "Could not load registry.json. Serve over HTTP.";
