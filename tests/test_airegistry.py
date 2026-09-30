@@ -73,6 +73,9 @@ class TestValidation(unittest.TestCase):
 class TestRegistry(Base):
     def test_load_and_cache_offline(self):
         _, comps = ai.load_registry()
+        self.assertTrue(
+        {"chat", "rag", "agent", "memory", "citations"}.issubset(set(comps))
+        )
         self.assertEqual(set(comps), {"chat", "rag", "agent", "memory", "citations"})
         os.environ["REGISTRY_URL"] = os.path.join(self.tmp, "missing.json")
         code, out, err = run("search", "rag")  # falls back to cache
