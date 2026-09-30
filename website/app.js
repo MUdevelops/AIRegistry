@@ -1,7 +1,6 @@
 const C = window.AIREGISTRY || {};
 const $ = (id) => document.getElementById(id);
 
-// DOM builder using textContent only: registry data is untrusted.
 const h = (t, p = {}, ...k) => {
   const e = document.createElement(t);
   Object.assign(e, p);
@@ -9,7 +8,9 @@ const h = (t, p = {}, ...k) => {
   return e;
 };
 
-let all = [], cat = "";
+let all = [];
+let cat = "";
+let authUser = null;
 
 function card(m) {
   return h(
@@ -20,9 +21,7 @@ function card(m) {
     h(
       "div",
       {},
-      ...m.tags.map((t) =>
-        h("span", { className: "tag" }, t)
-      )
+      ...m.tags.map((t) => h("span", { className: "tag" }, t))
     )
   );
 }
@@ -42,10 +41,7 @@ function render() {
   );
 
   $("grid").replaceChildren(
-    ...(list.length
-      ? list.map(card)
-      : [h("p", {}, "No matches.")]
-    )
+    ...(list.length ? list.map(card) : [h("p", {}, "No matches.")])
   );
 
   const cats = ["", ...new Set(all.map((m) => m.category))].sort();
@@ -73,16 +69,13 @@ function detail(m) {
     ["Runtime", m.runtime],
     ["License", m.license],
     ["Tags", m.tags.join(", ")],
-    [
-      "Dependencies",
-      (m.dependencies || []).join(", ") || "none"
-    ],
+    ["Dependencies", (m.dependencies || []).join(", ") || "none"],
     ["Files", m.files.join(", ")],
     ["Source", m.source]
   ];
 
   $("detail").replaceChildren(
-    h("a", { href: "#/" }, "< all components"),
+    h("a", { href: "#/" }, "← all components"),
     h("h1", {}, m.name, h("small", {}, " v" + m.version)),
     h("p", {}, m.description),
     h("pre", {}, "$ ai add " + m.name),
@@ -98,14 +91,19 @@ function detail(m) {
 }
 
 function route() {
-  const m = all.find(
-    (x) => x.name === location.hash.slice(2)
-  );
+  const path = location.hash.slice(2);
 
-  $("home").hidden = !!m;
+  const m = all.find((x) => x.name === path);
+
+  const showSubmit = path === "submit";
+
+  $("home").hidden = !!m || showSubmit;
   $("detail").hidden = !m;
+  $("submit").hidden = !showSubmit;
 
-  if (m) detail(m);
+  if (m) {
+    detail(m);
+  }
 }
 
 async function renderAuth() {
@@ -113,6 +111,7 @@ async function renderAuth() {
   if (!box) return;
 
   box.replaceChildren();
+  authUser = null;
 
   if (!C.AUTH_URL) return;
 
@@ -130,6 +129,8 @@ async function renderAuth() {
     const data = await response.json();
 
     if (data.authenticated && data.login) {
+      authUser = data.login;
+
       box.append(
         h(
           "span",
@@ -145,11 +146,10 @@ async function renderAuth() {
           "Sign out"
         )
       );
+
       return;
     }
-  } catch (_) {
-    // Keep login available if the auth endpoint is temporarily unavailable.
-  }
+  } catch (_) {}
 
   box.append(
     h(
@@ -163,7 +163,92 @@ async function renderAuth() {
   );
 }
 
+function csvTags(value) {
+  return value
+    .split(",")
+    .map((x) => x.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+async function submitComponent(event) {
+  event.preventDefault();
+
+  const status = $("submit-status");
+  const button = event.submitter;
+
+  status.textContent = "";
+
+  if (!authUser) {
+    status.textContent = "Please sign in with GitHub first.";
+    location.hash = "";
+    window.location.href =
+      (C.AUTH_URL || "/auth").replace(/\/$/, "") + "/login";
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Submitting...";
+
+  const payload = {
+    name: $("component-name").value.trim(),
+    version: $("component-version").value.trim(),
+    description: $("component-description").value.trim(),
+    category: $("component-category").value.trim().toLowerCase(),
+    runtime: $("component-runtime").value.trim(),
+    license: $("component-license").value.trim(),
+    tags: csvTags($("component-tags").value),
+    files: [
+      {
+        path: "README.md",
+        content: $("component-readme").value
+      },
+      {
+        path: "src/main.py",
+        content: $("component-source").value
+      }
+    ]
+  };
+
+  try {
+    const response = await fetch("/api/publisher/submit", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || "Submission failed.");
+    }
+
+    status.textContent =
+      "Submitted successfully. Pull Request: " +
+      (data.pull_request || "created");
+
+    event.target.reset();
+
+  } catch (error) {
+    status.textContent =
+      error.message || "Could not submit component.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Submit for Review";
+  }
+}
+
 $("q").oninput = render;
+
+$("submit-component").onclick = () => {
+  location.hash = "submit";
+};
+
+$("submit-form").addEventListener("submit", submitComponent);
+
 window.onhashchange = route;
 
 fetch(C.REGISTRY_URL || "registry.json")
