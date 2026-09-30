@@ -255,14 +255,18 @@ function addDependency(value = "") {
   );
 
   const input = h(
-    "input",
-    {
-      className: "dependency-input",
-      list: "registry-dependencies",
-      placeholder: "Select or type a component",
-      value
-    }
-  );
+  "input",
+  {
+    className: "dependency-input",
+    placeholder: "Select or type a component",
+    value
+  }
+);
+
+input.setAttribute(
+  "list",
+  "registry-dependencies"
+);
 
   const optional = h(
     "label",
