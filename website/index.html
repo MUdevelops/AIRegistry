@@ -49,101 +49,137 @@ AIRegistry repository through GitHub Pull Requests.
 
 <form id="submit-form">
 
-<label>
-Name
-<input
-  id="component-name"
-  required
-  maxlength="40"
-  pattern="[a-z0-9][a-z0-9-]{1,39}"
-  placeholder="my-component"
->
-</label>
+  <div class="form-section">
+    <h2>Component Information</h2>
 
-<label>
-Version
-<input
-  id="component-version"
-  required
-  pattern="[0-9]+\.[0-9]+\.[0-9]+"
-  placeholder="1.0.0"
->
-</label>
+    <label>
+      Name
+      <input
+        id="component-name"
+        required
+        maxlength="40"
+        pattern="[a-z0-9][a-z0-9-]{1,39}"
+        placeholder="my-component"
+      >
+    </label>
 
-<label>
-Description
-<input
-  id="component-description"
-  required
-  maxlength="280"
-  placeholder="What does this component do?"
->
-</label>
+    <label>
+      Version
+      <input
+        id="component-version"
+        required
+        pattern="[0-9]+\.[0-9]+\.[0-9]+"
+        placeholder="1.0.0"
+      >
+    </label>
 
-<label>
-Category
-<input
-  id="component-category"
-  required
-  maxlength="32"
-  pattern="[a-z0-9-]+"
-  placeholder="tool"
->
-</label>
+    <label>
+      Description
+      <input
+        id="component-description"
+        required
+        maxlength="280"
+        placeholder="What does this component do?"
+      >
+    </label>
 
-<label>
-Runtime
-<input
-  id="component-runtime"
-  required
-  maxlength="32"
-  placeholder="python"
->
-</label>
+    <div class="form-grid">
 
-<label>
-License
-<input
-  id="component-license"
-  required
-  maxlength="32"
-  placeholder="MIT"
->
-</label>
+      <label>
+        Category
+        <input
+          id="component-category"
+          required
+          maxlength="32"
+          pattern="[a-z0-9-]+"
+          placeholder="tool"
+        >
+      </label>
 
-<label>
-Tags
-<input
-  id="component-tags"
-  placeholder="ai, example, tool"
->
-</label>
+      <label>
+        Runtime
+        <input
+          id="component-runtime"
+          required
+          maxlength="32"
+          placeholder="python"
+        >
+      </label>
 
-<label>
-README.md
-<textarea
-  id="component-readme"
-  required
-  rows="10"
-  placeholder="# My Component&#10;&#10;Describe your component here."
-></textarea>
-</label>
+      <label>
+        License
+        <input
+          id="component-license"
+          required
+          maxlength="32"
+          placeholder="MIT"
+        >
+      </label>
 
-<label>
-src/main.py
-<textarea
-  id="component-source"
-  required
-  rows="14"
-  placeholder="def main():&#10;    pass"
-></textarea>
-</label>
+      <label>
+        Tags
+        <input
+          id="component-tags"
+          placeholder="ai, example, tool"
+        >
+      </label>
 
-<button type="submit">
-  Submit for Review
-</button>
+    </div>
+  </div>
 
-<p id="submit-status" role="status"></p>
+
+  <div class="form-section">
+
+    <div class="section-heading">
+      <div>
+        <h2>Dependencies</h2>
+        <p>Add other AIRegistry components required by your component.</p>
+      </div>
+
+      <button
+        id="add-dependency"
+        type="button"
+      >
+        + Add Dependency
+      </button>
+    </div>
+
+    <div id="dependencies-list"></div>
+
+  </div>
+
+
+  <div class="form-section">
+
+    <div class="section-heading">
+      <div>
+        <h2>Files</h2>
+        <p>README.md is required. Add one or more source files.</p>
+      </div>
+
+      <button
+        id="add-file"
+        type="button"
+      >
+        + Add File
+      </button>
+    </div>
+
+    <div id="files-list"></div>
+
+  </div>
+
+
+  <button
+    type="submit"
+  >
+    Submit for Review
+  </button>
+
+  <p
+    id="submit-status"
+    role="status"
+  ></p>
 
 </form>
 
