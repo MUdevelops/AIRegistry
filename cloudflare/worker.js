@@ -1,19 +1,66 @@
 const enc = new TextEncoder();
+const DECODER = new TextDecoder();
 
-const b64 = (bytes) =>
-  btoa(String.fromCharCode(...new Uint8Array(bytes)))
-    .replace(/[+/=]/g, (c) => ({ "+": "-", "/": "_", "=": "" })[c]);
+function b64url(bytes) {
+  return btoa(String.fromCharCode(...new Uint8Array(bytes)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
+}
 
-async function sign(value, secret) {
-  const key = await crypto.subtle.importKey(
+function b64urlDecode(value) {
+  const padded = value.replace(/-/g, "+").replace(/_/g, "/")
+    + "=".repeat((4 - (value.length % 4)) % 4);
+
+  const raw = atob(padded);
+  return Uint8Array.from(raw, c => c.charCodeAt(0));
+}
+
+async function hmacKey(secret) {
+  return crypto.subtle.importKey(
     "raw",
     enc.encode(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
-    ["sign"]
+    ["sign", "verify"]
   );
+}
 
-  return b64(await crypto.subtle.sign("HMAC", key, enc.encode(value)));
+async function sign(value, secret) {
+  const key = await hmacKey(secret);
+  return b64url(
+    await crypto.subtle.sign(
+      "HMAC",
+      key,
+      enc.encode(value)
+    )
+  );
+}
+
+async function verify(value, signature, secret) {
+  try {
+    const key = await hmacKey(secret);
+    return await crypto.subtle.verify(
+      "HMAC",
+      key,
+      b64urlDecode(signature),
+      enc.encode(value)
+    );
+  } catch {
+    return false;
+  }
+}
+
+async function pkceChallenge(verifier) {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    enc.encode(verifier)
+  );
+  return b64url(digest);
+}
+
+function randomVerifier() {
+  return b64url(crypto.getRandomValues(new Uint8Array(32)));
 }
 
 function getCookie(request, name) {
@@ -48,8 +95,35 @@ function clearCookie(name) {
   return `${name}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
 }
 
+function securityHeaders(headers = {}) {
+  const h = new Headers(headers);
+
+  h.set("X-Content-Type-Options", "nosniff");
+  h.set("X-Frame-Options", "DENY");
+  h.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  h.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  h.set(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self'; style-src 'self'; " +
+    "connect-src 'self'; img-src 'self' data:; object-src 'none'; " +
+    "base-uri 'none'; frame-ancestors 'none'"
+  );
+
+  return h;
+}
+
+function response(body, status = 200, headers = {}) {
+  return new Response(body, {
+    status,
+    headers: securityHeaders(headers)
+  });
+}
+
 function redirect(url, cookies = []) {
-  const headers = new Headers({ Location: url });
+  const headers = securityHeaders({
+    Location: url,
+    "Cache-Control": "no-store"
+  });
 
   for (const value of cookies) {
     headers.append("Set-Cookie", value);
@@ -76,14 +150,16 @@ async function handleAuth(request, env) {
   const path = url.pathname;
 
   if (!authConfigured(env)) {
-    return new Response("Authentication is not configured.", {
-      status: 503,
-      headers: { "Content-Type": "text/plain; charset=utf-8" }
+    return response("Authentication is not configured.", 503, {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-store"
     });
   }
 
   if (path === "/auth/login") {
     const state = crypto.randomUUID();
+    const verifier = randomVerifier();
+    const challenge = await pkceChallenge(verifier);
 
     const github = new URL(
       "https://github.com/login/oauth/authorize"
@@ -93,11 +169,14 @@ async function handleAuth(request, env) {
       client_id: env.GITHUB_CLIENT_ID,
       redirect_uri: env.GITHUB_REDIRECT_URI,
       state,
+      code_challenge: challenge,
+      code_challenge_method: "S256",
       scope: "read:user"
     });
 
     return redirect(github.href, [
-      cookie("st", state, 600)
+      cookie("st", state, 600),
+      cookie("pk", verifier, 600)
     ]);
   }
 
@@ -106,10 +185,18 @@ async function handleAuth(request, env) {
     const code = url.searchParams.get("code");
 
     const storedState = getCookie(request, "st");
+    const verifier = getCookie(request, "pk");
 
-    if (!state || !code || !storedState || state !== storedState) {
-      return new Response("Invalid OAuth state.", {
-        status: 400
+    if (
+      !state ||
+      !code ||
+      !storedState ||
+      !verifier ||
+      state !== storedState
+    ) {
+      return response("Invalid OAuth state.", 400, {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-store"
       });
     }
 
@@ -125,23 +212,20 @@ async function handleAuth(request, env) {
           client_id: env.GITHUB_CLIENT_ID,
           client_secret: env.GITHUB_CLIENT_SECRET,
           code,
-          redirect_uri: env.GITHUB_REDIRECT_URI
+          redirect_uri: env.GITHUB_REDIRECT_URI,
+          code_verifier: verifier
         })
       }
     );
 
     if (!tokenResponse.ok) {
-      return new Response("GitHub OAuth token exchange failed.", {
-        status: 502
-      });
+      return response("GitHub OAuth token exchange failed.", 502);
     }
 
     const token = await tokenResponse.json();
 
     if (!token.access_token) {
-      return new Response("GitHub OAuth token missing.", {
-        status: 502
-      });
+      return response("GitHub OAuth token missing.", 502);
     }
 
     const userResponse = await fetch(
@@ -155,29 +239,25 @@ async function handleAuth(request, env) {
     );
 
     if (!userResponse.ok) {
-      return new Response("GitHub user lookup failed.", {
-        status: 502
-      });
+      return response("GitHub user lookup failed.", 502);
     }
 
     const user = await userResponse.json();
 
     if (!user.login) {
-      return new Response("GitHub identity unavailable.", {
-        status: 502
-      });
+      return response("GitHub identity unavailable.", 502);
     }
 
     const identity = encodeURIComponent(user.login);
-    const signature = await sign(
-      identity,
-      env.SESSION_SECRET
-    );
+    const expires = Math.floor(Date.now() / 1000) + 604800;
+    const payload = `${identity}.${expires}`;
+    const signature = await sign(payload, env.SESSION_SECRET);
 
-    const session = `${identity}.${signature}`;
+    const session = `${payload}.${signature}`;
 
     return redirect(env.SITE_URL, [
       clearCookie("st"),
+      clearCookie("pk"),
       cookie("s", session, 604800)
     ]);
   }
@@ -186,65 +266,77 @@ async function handleAuth(request, env) {
     const session = getCookie(request, "s");
 
     if (!session) {
-      return new Response(
+      return response(
         JSON.stringify({ authenticated: false }),
+        200,
         {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store"
-          }
-        }
-      );
-    }
-
-    const dot = session.lastIndexOf(".");
-
-    if (dot <= 0) {
-      return new Response(
-        JSON.stringify({ authenticated: false }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store"
-          }
-        }
-      );
-    }
-
-    const identity = session.slice(0, dot);
-    const signature = session.slice(dot + 1);
-
-    const expected = await sign(
-      identity,
-      env.SESSION_SECRET
-    );
-
-    if (signature !== expected) {
-      return new Response(
-        JSON.stringify({ authenticated: false }),
-        {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store"
-          }
-        }
-      );
-    }
-
-    return new Response(
-      JSON.stringify({
-        authenticated: true,
-        login: decodeURIComponent(identity)
-      }),
-      {
-        status: 200,
-        headers: {
           "Content-Type": "application/json",
           "Cache-Control": "no-store"
         }
+      );
+    }
+
+    const parts = session.split(".");
+
+    if (parts.length !== 3) {
+      return response(
+        JSON.stringify({ authenticated: false }),
+        200,
+        {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        }
+      );
+    }
+
+    const identity = parts[0];
+    const expires = Number(parts[1]);
+    const signature = parts[2];
+
+    if (
+      !identity ||
+      !Number.isSafeInteger(expires) ||
+      expires <= Math.floor(Date.now() / 1000)
+    ) {
+      return response(
+        JSON.stringify({ authenticated: false }),
+        200,
+        {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        }
+      );
+    }
+
+    const payload = `${identity}.${expires}`;
+
+    const valid = await verify(
+      payload,
+      signature,
+      env.SESSION_SECRET
+    );
+
+    if (!valid) {
+      return response(
+        JSON.stringify({ authenticated: false }),
+        200,
+        {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        }
+      );
+    }
+
+    return response(
+      JSON.stringify({
+        authenticated: true,
+        login: decodeURIComponent(identity),
+        expires
+      }),
+      200,
+      {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
       }
     );
   }
@@ -255,8 +347,9 @@ async function handleAuth(request, env) {
     ]);
   }
 
-  return new Response("Authentication endpoint not found.", {
-    status: 404
+  return response("Authentication endpoint not found.", 404, {
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store"
   });
 }
 
