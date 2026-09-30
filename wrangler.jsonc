@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/wrangler@4/config-schema.json",
+  "name": "airegistry",
+  "main": "./cloudflare/worker.js",
+  "compatibility_date": "2026-09-26",
+  "assets": {
+    "directory": "./website",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "SITE_URL": "https://airegistry.instantregret96.workers.dev",
+    "GITHUB_REDIRECT_URI": "https://airegistry.instantregret96.workers.dev/auth/callback"
+  }
+}
