@@ -74,6 +74,28 @@
   {
    "category": "tool",
    "dependencies": [],
+   "description": "A minimal AIRegistry test component.",
+   "files": [
+    "README.md",
+    "src/main.py"
+   ],
+   "license": "MIT",
+   "name": "hello-ai",
+   "runtime": "python",
+   "sha256": {
+    "README.md": "55b85642136e1c5826565086228aed9bc4a2fc0581c4caac81e3923b174d9499",
+    "src/main.py": "ad575c6687598a150ccdee811ff4f0280465965cd76417c300b4c1233296764d"
+   },
+   "source": "registry/hello-ai",
+   "tags": [
+    "ai",
+    "example"
+   ],
+   "version": "1.0.0"
+  },
+  {
+   "category": "tool",
+   "dependencies": [],
    "description": "JSON-file memory store with substring search.",
    "files": [
     "README.md",
