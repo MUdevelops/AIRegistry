@@ -64,7 +64,6 @@ agents, citations, prompts, tools, validation, and text processing.
                      Build & Compose
 ```
 
-<img src="./readme_assets/Central-Hub-Pulse.gif" alt="Animated AIRegistry central hub" width="760"/>
 
 <sub><strong>The Central Hub</strong> — reusable AI capabilities connected through one versioned registry.</sub>
 
