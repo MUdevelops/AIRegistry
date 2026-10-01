@@ -1,24 +1,31 @@
 <div align="center">
 
-<img src="./readme_assets/Header.png" alt="AIRegistry — futuristic header" width="100%"/>
+<img src="./readme_assets/Header.png" alt="AIRegistry v2.1.0 futuristic launch header" width="100%"/>
+
+<img src="./readme_assets/Animated-Header.gif" alt="AIRegistry animated header" width="100%"/>
 
 <br/>
 
-<img src="./readme_assets/AIRegistry-animated-name.gif" alt="AIRegistry animated wordmark" width="760"/>
-
 <p>
-  <strong>Install AI capabilities, not libraries.</strong>
+  <a href="https://github.com/MUdevelops/AIRegistry/releases/tag/v2.1.0">
+    <img src="https://img.shields.io/badge/Release-v2.1.0-00d9ff?style=for-the-badge&logo=github&logoColor=white" alt="v2.1.0"/>
+  </a>
+  <a href="https://github.com/MUdevelops/AIRegistry">
+    <img src="https://img.shields.io/badge/Open%20Source-MIT-8b5cf6?style=for-the-badge" alt="Open Source"/>
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-%3E%3D3.9-22c55e?style=for-the-badge&logo=python&logoColor=white" alt="Python >=3.9"/>
+  </a>
+  <a href="https://airegistry.instantregret96.workers.dev">
+    <img src="https://img.shields.io/badge/Live%20Registry-Online-06b6d4?style=for-the-badge" alt="Live Registry"/>
+  </a>
 </p>
 
-<p>
-  An open-source registry and dependency-free CLI for reusable AI components,
-  agents, tools, workflows, and project templates.
-</p>
+### **Install AI capabilities, not libraries.**
 
 <p>
-  <a href="https://github.com/MUdevelops/AIRegistry/releases/tag/v2.1.0"><img src="https://img.shields.io/badge/release-v2.1.0-0ea5e9?style=for-the-badge&logo=github&logoColor=white" alt="v2.1.0"></a>
-  <a href="https://github.com/MUdevelops/AIRegistry/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-7c3aed?style=for-the-badge" alt="MIT License"></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-%3E%3D3.9-22c55e?style=for-the-badge&logo=python&logoColor=white" alt="Python >= 3.9"></a>
+  AIRegistry is an open-source registry and dependency-free CLI for reusable
+  AI components, workflows, tools, agents, memory, retrieval, prompts, and templates.
 </p>
 
 <p>
@@ -28,121 +35,77 @@
   ·
   <a href="https://github.com/MUdevelops/AIRegistry/issues">Issues</a>
   ·
-  <a href="https://github.com/MUdevelops/AIRegistry/pulls">Contribute</a>
+  <a href="https://github.com/MUdevelops/AIRegistry/pulls">Pull Requests</a>
 </p>
 
 </div>
 
----
+<img src="./readme_assets/01-overview.gif" alt="Animated overview section" width="100%"/>
 
 ## ✦ What is AIRegistry?
 
-AI projects repeatedly rebuild the same small building blocks:
+AI development repeatedly needs the same small building blocks: retrieval, memory,
+agents, citations, prompts, tools, validation, and text processing.
 
-`retrieval` · `memory` · `agents` · `citations` · `prompts` · `tools` · `validation`
+**AIRegistry packages those building blocks as discoverable, versioned, auditable source components.**
 
-**AIRegistry turns those building blocks into versioned, discoverable, auditable source components.**
+<div align="center">
 
 ```text
-discover → inspect → verify → add → build → share
+                 ┌─────────────────────┐
+                 │     AIRegistry      │
+                 │  versioned source   │
+                 └─────────┬───────────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        ▼                  ▼                  ▼
+      Discover           Verify             Add
+        │                  │                  │
+        └──────────────────┼──────────────────┘
+                           ▼
+                     Build & Compose
 ```
 
-The goal is simple:
+<img src="./readme_assets/Central-Hub-Pulse.gif" alt="Animated AIRegistry central hub" width="760"/>
+
+<sub><strong>The Central Hub</strong> — reusable AI capabilities connected through one versioned registry.</sub>
+
+</div>
 
 > **Reuse the capability. Own the source. Pin the version.**
 
-<div align="center">
-  <img src="./readme_assets/Central%20Hub.png" alt="AIRegistry central component hub" width="720"/>
-</div>
-
----
+<img src="./readme_assets/02-why.gif" alt="Animated Why AIRegistry section" width="100%"/>
 
 ## ⚡ Why AIRegistry?
 
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### Versioned by design
-
-Every published component release lives in an immutable version path:
-
-```text
-registry/
-└── component/
-    └── versions/
-        └── 1.0.0/
-```
-
-Use an exact release when reproducibility matters:
-
-```bash
-ai add rag@0.1.0
-```
-
-</td>
-<td width="50%" valign="top">
-
-### Verified before use
-
-Each release records its files and SHA-256 integrity metadata.
+| Capability | What it gives developers |
+|---|---|
+| 🧬 **Immutable releases** | Components live under explicit version paths. |
+| 🎯 **Exact resolution** | `name@version` is a first-class reference. |
+| 🔐 **Integrity checks** | Release files carry SHA-256 metadata. |
+| 🧱 **Composable source** | Reuse small building blocks inside your own applications. |
+| 🛠️ **Dependency-free CLI** | Standard-library-first developer workflow. |
+| 🤝 **Community publishing** | Contributions flow through GitHub branches and PRs. |
 
 ```text
-resolve exact version
-        ↓
-validate source
-        ↓
-verify checksums
-        ↓
-install + lock
+discover
+   ↓
+inspect
+   ↓
+verify
+   ↓
+add
+   ↓
+compose
+   ↓
+publish
 ```
 
-</td>
-</tr>
-<tr>
-<td valign="top">
-
-### Developer-first CLI
-
-No runtime third-party dependencies.
-
-```bash
-ai search rag
-ai info rag@0.1.0
-ai add rag@0.1.0
-ai update
-```
-
-</td>
-<td valign="top">
-
-### Community publishing
-
-New components and releases go through the GitHub contribution workflow.
-
-```text
-submit
-  ↓
-branch + commit
-  ↓
-pull request
-  ↓
-CI + review
-  ↓
-merge
-  ↓
-registry release
-```
-
-</td>
-</tr>
-</table>
-
----
+<img src="./readme_assets/03-quickstart.gif" alt="Animated quick start section" width="100%"/>
 
 ## 🚀 Quick Start
 
-### Install the CLI
+### Install
 
 From a local checkout:
 
@@ -150,53 +113,58 @@ From a local checkout:
 python -m pip install .
 ```
 
-Then discover a component:
+### Search
 
 ```bash
 ai search rag
 ```
 
-Inspect the latest release:
+### Inspect
 
 ```bash
 ai info rag
-```
-
-Inspect an exact release:
-
-```bash
 ai info rag@0.1.0
 ```
 
-Install the exact release:
-
-```bash
-ai add rag@0.1.0
-```
-
-Preview the operation first:
+### Preview
 
 ```bash
 ai add rag@0.1.0 --dry-run
 ```
 
-See installed components:
+### Install
+
+```bash
+ai add rag@0.1.0
+```
+
+### Inspect local state
 
 ```bash
 ai list
 ```
 
-Update installed components to newer stable releases:
+### Update
 
 ```bash
 ai update
 ```
 
----
+<div align="center">
+
+```text
+┌──────────┐     ┌────────────┐     ┌─────────┐     ┌──────────────┐
+│  search  │ ──▶ │   inspect  │ ──▶ │  verify │ ──▶ │  install     │
+└──────────┘     └────────────┘     └─────────┘     └──────────────┘
+```
+
+</div>
+
+<img src="./readme_assets/04-ecosystem.gif" alt="Animated component ecosystem section" width="100%"/>
 
 ## 🧩 Component Ecosystem
 
-AIRegistry currently contains the following reusable components:
+AIRegistry v2.1 includes 13 reusable components:
 
 | Component | Latest | Category | Typical role |
 |---|---:|---|---|
@@ -210,254 +178,162 @@ AIRegistry currently contains the following reusable components:
 | `keyword-rag` | `1.0.0` | retrieval | Lightweight keyword retrieval |
 | `memory` | `0.1.0` | tool | JSON-file memory store |
 | `prompt-builder` | `1.0.0` | prompt | Reusable prompt construction |
-| `rag` | `0.1.0` | workflow | Small retrieval workflow |
+| `rag` | `0.1.0` | workflow | Small keyword retrieval workflow |
 | `text-chunker` | `1.0.0` | text | Configurable text chunking |
 | `tool-router` | `1.0.0` | tool | Safe tool registration and routing |
 
-Browse the complete live catalog at:
+<div align="center">
 
-**https://airegistry.instantregret96.workers.dev**
+`RAG` · `Agents` · `Memory` · `Tools` · `Prompts` · `Citations` · `Validation`
 
----
+</div>
 
-## 🔍 The Registry Model
+<img src="./readme_assets/05-registry.gif" alt="Animated registry model section" width="100%"/>
 
-AIRegistry v2.1 uses an immutable, versioned release model.
+## 🔍 Registry Model
+
+AIRegistry v2.1 uses an immutable, versioned release model:
 
 ```text
-Component
-│
-├── metadata
-│
-└── releases
-    │
-    ├── 0.1.0
-    │   ├── component.json
-    │   ├── README.md
-    │   └── src/
-    │
-    ├── 0.2.0
-    │   ├── component.json
-    │   ├── README.md
-    │   └── src/
-    │
-    └── 1.0.0
-        ├── component.json
-        ├── README.md
-        └── src/
+registry/
+└── component/
+    └── versions/
+        ├── 0.1.0/
+        │   ├── component.json
+        │   ├── README.md
+        │   └── src/
+        │
+        ├── 0.2.0/
+        │   ├── component.json
+        │   ├── README.md
+        │   └── src/
+        │
+        └── 1.0.0/
+            ├── component.json
+            ├── README.md
+            └── src/
 ```
 
-Each release contains:
+Each release records:
 
 - exact version metadata;
 - dependency references;
 - release notes;
-- source file list;
+- file list;
 - SHA-256 checksums;
 - immutable source path.
 
-That makes `name@version` a first-class developer primitive.
-
----
-
-## 🛠️ Example Workflow
-
-Imagine you are building a retrieval application.
-
-### 1. Find a retriever
+So:
 
 ```bash
-ai search keyword-rag
+ai add rag@0.1.0
 ```
 
-### 2. Inspect the release
+is not merely "install the current RAG component"; it is an explicit release selection.
 
-```bash
-ai info keyword-rag@1.0.0
-```
+<img src="./readme_assets/06-publish.gif" alt="Animated community publishing section" width="100%"/>
 
-### 3. Add it
+## 🤝 Community Publishing
 
-```bash
-ai add keyword-rag@1.0.0
-```
+AIRegistry is built for developer participation.
 
-### 4. Add supporting context construction
+Contributors can submit:
 
-```bash
-ai add context-builder@1.0.0
-```
-
-### 5. Build your application
-
-```text
-documents
-    ↓
-keyword-rag
-    ↓
-context-builder
-    ↓
-prompt-builder
-    ↓
-your AI application
-```
-
-AIRegistry provides the components; your application owns the final composition.
-
----
-
-## 🤝 Publish a Component
-
-AIRegistry is designed for community contribution.
-
-Authenticated publishers can submit:
-
-- a new component;
-- a new release of an existing component;
+- new components;
+- new releases;
 - exact dependency references;
-- release notes and file metadata.
+- release notes and metadata.
 
-The publishing workflow prepares a **branch, commit, and pull request** rather than writing directly to `main`.
+The publisher workflow prepares a branch, commit, and pull request instead of writing
+directly to `main`.
 
 ```text
 Developer
-   │
-   ▼
-AIRegistry Publisher
-   │
-   ├── validate manifest
-   ├── validate version
-   ├── validate dependencies
-   ├── prepare release tree
-   └── create Pull Request
+    │
+    ▼
+Publisher UI
+    │
+    ├── manifest validation
+    ├── version validation
+    ├── dependency validation
+    ├── path / file checks
+    └── release preparation
             │
             ▼
-       CI + Review
+      GitHub Pull Request
+            │
+         CI + Review
             │
             ▼
-         main
+           main
+            │
+            ▼
+        registry release
 ```
 
-Start here:
+Live publisher entry point:
 
 **https://airegistry.instantregret96.workers.dev**
 
----
+<img src="./readme_assets/07-security.gif" alt="Animated security section" width="100%"/>
 
 ## 🔐 Security & Integrity
 
-AIRegistry is built around a few simple trust boundaries:
+AIRegistry treats published source as an explicit trust boundary.
 
 ```text
-untrusted submission
-        ↓
+submission
+    ↓
 manifest validation
-        ↓
+    ↓
 version validation
-        ↓
+    ↓
 dependency validation
-        ↓
-path / file safety checks
-        ↓
-SHA-256 generation
-        ↓
-pull request review
-        ↓
+    ↓
+path / file safety
+    ↓
+SHA-256 metadata
+    ↓
+PR review
+    ↓
 published release
 ```
 
-The CLI also protects installs against unsafe paths and verifies release files
-against recorded SHA-256 metadata.
+The CLI also checks:
 
-Read the project's security guidance in [`SECURITY.md`](./SECURITY.md).
+- unsafe/traversal paths;
+- blocked executable extensions;
+- release source paths;
+- checksum consistency.
 
----
+See [`SECURITY.md`](./SECURITY.md).
 
-## 🧱 Architecture
+<img src="./readme_assets/08-release.gif" alt="Animated release section" width="100%"/>
 
-```text
-┌───────────────────────┐
-│       Developer       │
-└───────────┬───────────┘
-            │
-     search / info / add
-            │
-            ▼
-┌───────────────────────┐
-│   AIRegistry CLI      │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│     Registry v2       │
-│ versions + checksums  │
-└───────────┬───────────┘
-            │
-            ├───────────────┐
-            ▼               ▼
-      Static Web UI     Publisher API
-                            │
-                            ▼
-                     GitHub Pull Request
-```
+## 📦 V2.1.0 Release
 
-Production deployment uses Cloudflare Workers + Static Assets.
+**AIRegistry v2.1.0** introduced the versioned-release foundation:
 
-More detail: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
+- Registry schema v2.
+- Immutable version directories.
+- Exact component references.
+- Exact dependency references.
+- SHA-256 file integrity metadata.
+- Version-aware lockfiles.
+- `ai update`.
+- Community publishing for new components and releases.
+- Version history and release selection in the web interface.
+- V2.0 → V2.1 migration tooling.
 
----
-
-## 🧪 Validation
-
-The project release process validates:
-
-```text
-registry freshness
-      +
-automated test suite
-      +
-Python syntax
-      +
-Worker / website syntax
-      +
-Git whitespace checks
-      +
-deployment dry-run
-```
-
-For a local development checkout:
-
-```bash
-python .\scripts\build_registry.py --check
-python -m unittest discover -s tests -v
-git diff --check
-```
-
----
-
-## 📦 Release
-
-### v2.1.0
-
-AIRegistry v2.1 introduced the immutable versioned release model:
-
-- registry schema v2;
-- exact component references;
-- exact dependency references;
-- SHA-256 file integrity metadata;
-- version-aware lockfiles;
-- `ai update`;
-- community publishing for new components and new releases;
-- version history and release selection in the web UI;
-- migration tooling for the V2.0 → V2.1 layout.
-
-**Released:** `v2.1.0`
-
-**Commit:** `116af78`
-
+**Release:** `v2.1.0`  
+**Commit:** `116af78`  
 **Tag:** `v2.1.0`
 
----
+<a href="https://github.com/MUdevelops/AIRegistry/releases/tag/v2.1.0">
+<img src="https://img.shields.io/badge/View%20Release-v2.1.0-00d9ff?style=for-the-badge&logo=github&logoColor=white" alt="View release"/>
+</a>
+
+<img src="./readme_assets/09-docs.gif" alt="Animated documentation section" width="100%"/>
 
 ## 📚 Documentation
 
@@ -470,32 +346,32 @@ AIRegistry v2.1 introduced the immutable versioned release model:
 | [`BUILD_NOTES.md`](./BUILD_NOTES.md) | Build and release notes |
 | [`docs/CLOUD_AUTH.md`](./docs/CLOUD_AUTH.md) | GitHub / Cloudflare authentication details |
 
----
+<img src="./readme_assets/10-vision.gif" alt="Animated vision section" width="100%"/>
 
 ## 🌌 Vision
 
-AIRegistry is intentionally modular.
-
-The long-term direction is to make reusable AI building blocks easier to:
+AIRegistry is intentionally modular:
 
 **discover → understand → verify → install → compose → publish**
 
-The registry should stay readable and developer-owned: small components, explicit
-versions, transparent source, and a contribution path that fits normal GitHub
-development.
+The direction is developer-owned AI infrastructure:
 
----
+- small components;
+- explicit releases;
+- transparent source;
+- reproducible installation;
+- GitHub-native contribution.
 
 <div align="center">
 
-<img src="./readme_assets/Footer.png" alt="AIRegistry futuristic footer" width="100%"/>
-
-<br/>
-
-### AIRegistry
+### **AIRegistry**
 
 **Discover. Build. Share.**
 
 <sub>Open-source infrastructure for reusable AI components.</sub>
+
+<br/><br/>
+
+<img src="./readme_assets/Footer.png" alt="AIRegistry futuristic transparent footer" width="100%"/>
 
 </div>
