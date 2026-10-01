@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="./readme_assets/Header.png" alt="AIRegistry v2.1.0 futuristic launch header" width="100%"/>
-
 <img src="./readme_assets/Animated-Header.gif" alt="AIRegistry animated header" width="100%"/>
 
 <br/>
