@@ -473,6 +473,46 @@
    ]
   },
   {
+   "category": "workflow",
+   "description": "Composable retrieval workflow that connects a versioned retriever with a context builder to produce bounded AI-ready context.",
+   "latest_version": "1.0.0",
+   "license": "MIT",
+   "name": "retrieval-pipeline",
+   "runtime": "python",
+   "tags": [
+    "rag"
+   ],
+   "versions": [
+    {
+     "category": "workflow",
+     "dependencies": [
+      "context-builder@1.0.0",
+      "keyword-rag@1.0.0"
+     ],
+     "description": "Composable retrieval workflow that connects a versioned retriever with a context builder to produce bounded AI-ready context.",
+     "files": [
+      "README.md",
+      "src/retrieval_pipeline.py",
+      "src/test_retrieval_pipeline.py"
+     ],
+     "license": "MIT",
+     "name": "retrieval-pipeline",
+     "release_notes": "Initial release of a composable retrieval pipeline for AI and RAG applications.\n\nThis release defines a small adapter-based workflow that connects a retriever with a context builder while keeping the pipeline deterministic, dependency-light, and easy to integrate.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "67a43716297bb12782db65ef667fa5d6e30912e94e9ccbf8e81c917088a0be33",
+      "src/retrieval_pipeline.py": "9cc093d4edf0c9554b5be2eeb5c4e032cd67af4265ffc70a5dad2dd15d3985a8",
+      "src/test_retrieval_pipeline.py": "9f9bac9ed6001e2458aaafc0f339fc3db2a9ec05b5de64e1dd28502c5d39ff87"
+     },
+     "source": "registry/retrieval-pipeline/versions/1.0.0",
+     "tags": [
+      "rag"
+     ],
+     "version": "1.0.0"
+    }
+   ]
+  },
+  {
    "category": "text",
    "description": "Split text into configurable chunks with overlap, by characters or words.",
    "latest_version": "1.0.0",
