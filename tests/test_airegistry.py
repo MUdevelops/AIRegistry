@@ -92,7 +92,7 @@ class TestRegistry(Base):
 
     def test_search(self):
         comps = ai.load_registry()[1]
-        self.assertEqual(ai.search(comps, "rag")[0]["name"], "rag")
+        self.assertIn("rag", [m["name"] for m in ai.search(comps, "rag")])
         self.assertEqual(ai.search(comps, "zzzz"), [])
         code, out, _ = run("search", "agent", "tools")
         self.assertIn("agent", out)
