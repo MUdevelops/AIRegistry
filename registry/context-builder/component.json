@@ -1,0 +1,21 @@
+{
+ "name": "context-builder",
+ "version": "1.0.0",
+ "description": "Combine retrieved passages into a structured, size-limited context block for prompts.",
+ "category": "retrieval",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": [
+  "context",
+  "rag",
+  "prompt"
+ ],
+ "dependencies": [
+  "keyword-rag"
+ ],
+ "files": [
+  "README.md",
+  "src/context_builder.py"
+ ],
+ "source": "registry/context-builder"
+}

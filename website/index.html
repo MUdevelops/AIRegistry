@@ -1,215 +1,159 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AIRegistry</title><link rel="stylesheet" href="style.css"></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b10">
+  <meta name="description" content="AIRegistry — discover, inspect, and install reusable AI components.">
+  <title>AIRegistry — Reusable AI Components</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
-<header><a class="logo" href="#/">AI<b>Registry</b></a><span id="auth"></span></header>
-<main>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="logo" href="#/" aria-label="AIRegistry home">
+        <span class="logo-mark">AI</span><span>Registry</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#/">Catalog</a>
+        <a href="#/submit">Submit</a>
+        <a href="https://github.com/MUdevelops/AIRegistry" target="_blank" rel="noopener">GitHub</a>
+        <span id="auth" class="auth"></span>
+      </nav>
+    </header>
 
-<section id="home">
-<h1>Reusable AI components, one command away.</h1>
+    <main>
+      <section id="home" class="page-section">
+        <div class="hero">
+          <div class="eyebrow"><span class="status-dot"></span> OPEN-SOURCE AI COMPONENT REGISTRY</div>
+          <h1>Install AI capabilities,<br><em>not libraries.</em></h1>
+          <p class="hero-copy">
+            Discover focused AI building blocks, inspect the source, and add only what your project needs.
+            AIRegistry keeps reusable components small, readable, auditable, and easy to own.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#catalog">Browse components</a>
+            <a class="button button-ghost" href="https://github.com/MUdevelops/AIRegistry" target="_blank" rel="noopener">View on GitHub ↗</a>
+          </div>
 
-<p>
-An open-source registry and CLI for reusable AI components, agents, tools,
-workflows and project templates.
-</p>
+          <div class="command-panel" aria-label="AIRegistry CLI example">
+            <div class="command-head"><span>Quick start</span><button id="copy-command" type="button">Copy</button></div>
+            <pre><code>$ ai search rag
+$ ai info rag
+$ ai add rag</code></pre>
+          </div>
 
-<pre>$ ai search rag
+          <div class="stats" aria-label="Registry summary">
+            <div><strong id="stat-components">—</strong><span>components</span></div>
+            <div><strong id="stat-categories">—</strong><span>categories</span></div>
+            <div><strong id="stat-runtime">Python</strong><span>core runtime</span></div>
+            <div><strong id="stat-health">Checking</strong><span>service status</span></div>
+          </div>
+        </div>
 
-$ ai add rag</pre>
+        <div class="section-intro" id="catalog">
+          <div>
+            <div class="eyebrow">THE CATALOG</div>
+            <h2>Build from focused pieces.</h2>
+          </div>
+          <p>Search by component name, capability, category, or tag. Every result links back to its source and install command.</p>
+        </div>
 
-<div class="toolbar">
-  <input
-    id="q"
-    type="search"
-    placeholder="Search components, tags..."
-    aria-label="Search components"
-  >
+        <div class="toolbar" role="search">
+          <label class="search-wrap" for="q">
+            <span aria-hidden="true">⌕</span>
+            <input id="q" type="search" placeholder="Search components, tags, capabilities..." autocomplete="off" aria-label="Search components">
+            <span id="result-count" class="result-count"></span>
+          </label>
+          <a class="button button-secondary" href="#/submit">+ Submit component</a>
+        </div>
 
-  <button id="submit-component" type="button">
-    Submit Component
-  </button>
-</div>
+        <div id="cats" class="filters" aria-label="Filter by category"></div>
+        <div id="grid" class="component-grid" aria-live="polite">
+          <div class="loading-card">Loading registry…</div>
+        </div>
 
-<div id="cats"></div>
-<div id="grid">Loading...</div>
+        <div class="principles">
+          <div class="principle"><span>01</span><h3>Small</h3><p>One clear responsibility instead of another giant framework.</p></div>
+          <div class="principle"><span>02</span><h3>Readable</h3><p>Inspect the implementation before it becomes part of your project.</p></div>
+          <div class="principle"><span>03</span><h3>Auditable</h3><p>Manifest metadata, file lists, and checksums make installation explicit.</p></div>
+          <div class="principle"><span>04</span><h3>Review-first</h3><p>Community submissions become GitHub Pull Requests for maintainer review.</p></div>
+        </div>
+      </section>
 
-</section>
+      <section id="submit" class="page-section" hidden>
+        <div class="page-heading compact-heading">
+          <a class="back-link" href="#/">← Back to catalog</a>
+          <div class="eyebrow">COMMUNITY PUBLISHING</div>
+          <h1>Submit a component.</h1>
+          <p>Sign in with GitHub, provide the source and metadata, and AIRegistry will prepare a Pull Request for review.</p>
+        </div>
 
-<section id="submit" hidden>
+        <form id="submit-form" class="submit-form">
+          <div class="form-section">
+            <div class="section-number">01</div>
+            <div class="form-section-main">
+              <h2>Component information</h2>
+              <p>Use a stable, descriptive name and keep the description focused.</p>
+              <div class="field-grid">
+                <label>Name <input id="component-name" required maxlength="40" pattern="[a-z0-9][a-z0-9-]{1,39}" placeholder="my-component"></label>
+                <label>Version <input id="component-version" required pattern="[0-9]+\.[0-9]+\.[0-9]+" placeholder="1.0.0"></label>
+                <label class="field-wide">Description <input id="component-description" required maxlength="280" placeholder="What does this component do?"></label>
+                <label>Category <input id="component-category" required maxlength="32" pattern="[a-z0-9-]+" placeholder="tool"></label>
+                <label>Runtime <input id="component-runtime" required maxlength="32" placeholder="python"></label>
+                <label>License <input id="component-license" required maxlength="32" placeholder="MIT"></label>
+                <label class="field-wide">Tags <input id="component-tags" placeholder="ai, retrieval, tool"></label>
+              </div>
+            </div>
+          </div>
 
-<a href="#/">← Back to components</a>
+          <div class="form-section">
+            <div class="section-number">02</div>
+            <div class="form-section-main">
+              <div class="section-heading">
+                <div><h2>Dependencies</h2><p>Reference other AIRegistry components when your component needs them.</p></div>
+                <button id="add-dependency" class="button button-secondary" type="button">+ Add dependency</button>
+              </div>
+              <div id="dependencies-list" class="dynamic-list"></div>
+            </div>
+          </div>
 
-<h1>Submit Component</h1>
+          <div class="form-section">
+            <div class="section-number">03</div>
+            <div class="form-section-main">
+              <div class="section-heading">
+                <div><h2>Files</h2><p><code>README.md</code> and at least one <code>src/</code> file are required.</p></div>
+                <button id="add-file" class="button button-secondary" type="button">+ Add file</button>
+              </div>
+              <div id="files-list" class="dynamic-list"></div>
+            </div>
+          </div>
 
-<p>
-Submit a component for review. Approved submissions are merged into the
-AIRegistry repository through GitHub Pull Requests.
-</p>
+          <div class="submit-actions">
+            <button class="button button-primary" type="submit">Submit for review</button>
+            <span id="submit-status" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
 
-<form id="submit-form">
+      <section id="detail" class="page-section" hidden></section>
+    </main>
 
-  <div class="form-section">
-    <h2>Release</h2>
-    <label>
-      Publishing mode
-      <select id="publish-mode">
-        <option value="new">New Component</option>
-        <option value="release">New Version</option>
-      </select>
-    </label>
-    <p id="release-component" hidden>Choose an existing component name and submit a higher semantic version.</p>
-  </div>
-
-  <div class="form-section">
-    <h2>Component Information</h2>
-
-    <label>
-      Name
-      <input
-        id="component-name"
-        required
-        maxlength="40"
-        pattern="[a-z0-9][a-z0-9-]{1,39}"
-        placeholder="my-component"
-      >
-    </label>
-
-    <label>
-      Version
-      <input
-        id="component-version"
-        required
-        pattern="[0-9]+\.[0-9]+\.[0-9]+"
-        placeholder="1.0.0"
-      >
-    </label>
-
-    <label>
-      Release notes
-      <textarea
-        id="component-release-notes"
-        maxlength="2000"
-        rows="5"
-        placeholder="Describe what changed in this release."
-      ></textarea>
-    </label>
-
-    <label>
-      Description
-      <input
-        id="component-description"
-        required
-        maxlength="280"
-        placeholder="What does this component do?"
-      >
-    </label>
-
-    <div class="form-grid">
-
-      <label>
-        Category
-        <input
-          id="component-category"
-          required
-          maxlength="32"
-          pattern="[a-z0-9-]+"
-          placeholder="tool"
-        >
-      </label>
-
-      <label>
-        Runtime
-        <input
-          id="component-runtime"
-          required
-          maxlength="32"
-          placeholder="python"
-        >
-      </label>
-
-      <label>
-        License
-        <input
-          id="component-license"
-          required
-          maxlength="32"
-          placeholder="MIT"
-        >
-      </label>
-
-      <label>
-        Tags
-        <input
-          id="component-tags"
-          placeholder="ai, example, tool"
-        >
-      </label>
-
-    </div>
-  </div>
-
-
-  <div class="form-section">
-
-    <div class="section-heading">
+    <footer class="site-footer">
       <div>
-        <h2>Dependencies</h2>
-        <p>Add other AIRegistry components required by your component.</p>
+        <strong>AIRegistry</strong>
+        <span>Reusable AI components, source-first.</span>
       </div>
-
-      <button
-        id="add-dependency"
-        type="button"
-      >
-        + Add Dependency
-      </button>
-    </div>
-
-    <div id="dependencies-list"></div>
-
+      <div class="footer-links">
+        <a href="https://github.com/MUdevelops/AIRegistry" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/MUdevelops/AIRegistry/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contribute</a>
+        <a href="https://github.com/MUdevelops/AIRegistry/issues" target="_blank" rel="noopener">Issues</a>
+        <a href="/registry.json">registry.json</a>
+      </div>
+    </footer>
   </div>
 
-
-  <div class="form-section">
-
-    <div class="section-heading">
-      <div>
-        <h2>Files</h2>
-        <p>README.md is required. Add one or more source files.</p>
-      </div>
-
-      <button
-        id="add-file"
-        type="button"
-      >
-        + Add File
-      </button>
-    </div>
-
-    <div id="files-list"></div>
-
-  </div>
-
-
-  <button
-    type="submit"
-  >
-    Submit for Review
-  </button>
-
-  <p
-    id="submit-status"
-    role="status"
-  ></p>
-
-</form>
-
-</section>
-
-<section id="detail" hidden></section>
-
-</main>
-
-<script src="config/public.js"></script><script src="app.js"></script>
-</body></html>
+  <script src="config/public.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,34 +1,16 @@
-# Build Notes
+# Build notes
 
-## Current V2.1 architecture
+- Python tested: 3.12.3 (requires 3.11+; stdlib only)
+- CLI: `python ai.py search rag` (see README for all commands)
+- Website: `python -m http.server -d website 8000` -> http://localhost:8000
+- Tests: `python -m unittest discover -s tests` (19 tests, pass)
+- Regenerate index: `python scripts/build_registry.py` (`--check` to verify)
+- ZIP size: 26303 bytes
 
-- Python CLI with no runtime third-party dependencies.
-- Immutable component releases under `registry/<name>/versions/<version>/`.
-- Schema v2 generated registry indexes in `registry.json` and `website/registry.json`.
-- Cloudflare Worker handles GitHub OAuth, signed sessions, and GitHub App pull-request publishing.
-- Website is static HTML/CSS/JavaScript.
-
-## Validation
-
-The release suite covers CLI behavior, version resolution, exact dependencies, registry generation, checksums, path safety, lock integrity, and component smoke tests.
-
-Current catalog: 13 components / 13 initial releases.
-
-## Deployment configuration
-
-The root `wrangler.jsonc` is the authoritative Cloudflare configuration. OAuth and GitHub App secrets are configured in Cloudflare and are never committed.
-
-For local development:
-
-```powershell
-python -m unittest discover -s tests -v
-python scripts/build_registry.py --check
-node --check cloudflare/worker.js
-node --check website/app.js
-```
-
-For CLI installation:
-
-```powershell
-python -m pip install .
-```
+Values to configure later (none needed locally):
+- `website/config/public.js`: REGISTRY_URL, AUTH_URL, GITHUB_CLIENT_ID (public values only)
+- Cloudflare Worker secrets: GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SESSION_SECRET; var SITE_URL in cloudflare/wrangler.toml
+- GitHub OAuth App callback URL: https://YOUR-SITE/auth/callback
+- Cloudflare Pages: output dir `website`, no build command
+- SECURITY.md: add a vulnerability contact; LICENSE: set copyright holder
+- Worker is not tested against live GitHub/Cloudflare.

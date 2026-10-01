@@ -1,0 +1,19 @@
+{
+ "name": "conversation-memory",
+ "version": "1.0.0",
+ "description": "Small local in-memory conversation store with add, search, recent and clear.",
+ "category": "memory",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": [
+  "memory",
+  "chat",
+  "conversation"
+ ],
+ "dependencies": [],
+ "files": [
+  "README.md",
+  "src/conversation_memory.py"
+ ],
+ "source": "registry/conversation-memory"
+}

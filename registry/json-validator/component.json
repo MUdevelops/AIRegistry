@@ -1,0 +1,19 @@
+{
+ "name": "json-validator",
+ "version": "1.0.0",
+ "description": "Validate JSON text and return error position, type, keys and optional schema errors.",
+ "category": "validation",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": [
+  "json",
+  "validation",
+  "schema"
+ ],
+ "dependencies": [],
+ "files": [
+  "README.md",
+  "src/json_validator.py"
+ ],
+ "source": "registry/json-validator"
+}

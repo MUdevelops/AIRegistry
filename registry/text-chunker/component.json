@@ -1,0 +1,19 @@
+{
+ "name": "text-chunker",
+ "version": "1.0.0",
+ "description": "Split text into configurable chunks with overlap, by characters or words.",
+ "category": "text",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": [
+  "chunking",
+  "text",
+  "rag"
+ ],
+ "dependencies": [],
+ "files": [
+  "README.md",
+  "src/text_chunker.py"
+ ],
+ "source": "registry/text-chunker"
+}

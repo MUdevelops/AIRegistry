@@ -3,7 +3,7 @@ import os, sys, unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 for c in ("prompt-builder", "text-chunker", "json-validator", "citation-builder",
           "conversation-memory", "keyword-rag", "context-builder", "tool-router"):
-    sys.path.insert(0, os.path.join(ROOT, "registry", c, "versions", next(iter(os.listdir(os.path.join(ROOT, "registry", c, "versions")))), "src"))
+    sys.path.insert(0, os.path.join(ROOT, "registry", c, "src"))
 
 from prompt_builder import PromptBuilder, build_prompt  # noqa: E402
 from text_chunker import chunk_text, chunk_with_offsets  # noqa: E402
