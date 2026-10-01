@@ -1,0 +1,19 @@
+{
+ "name": "tool-router",
+ "version": "1.0.0",
+ "description": "Register simple tools and route calls by name, safely rejecting unknown tools.",
+ "category": "tool",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": [
+  "tools",
+  "router",
+  "agent"
+ ],
+ "dependencies": [],
+ "files": [
+  "README.md",
+  "src/tool_router.py"
+ ],
+ "source": "registry/tool-router"
+}

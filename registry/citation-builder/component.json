@@ -1,0 +1,19 @@
+{
+ "name": "citation-builder",
+ "version": "1.0.0",
+ "description": "Format numbered source citations and bibliographies from source metadata.",
+ "category": "tool",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": [
+  "citations",
+  "sources",
+  "rag"
+ ],
+ "dependencies": [],
+ "files": [
+  "README.md",
+  "src/citation_builder.py"
+ ],
+ "source": "registry/citation-builder"
+}

@@ -1,0 +1,19 @@
+{
+ "name": "prompt-builder",
+ "version": "1.0.0",
+ "description": "Build reusable prompts from system, instruction, context and input sections.",
+ "category": "prompt",
+ "runtime": "python",
+ "license": "MIT",
+ "tags": [
+  "prompt",
+  "template",
+  "llm"
+ ],
+ "dependencies": [],
+ "files": [
+  "README.md",
+  "src/prompt_builder.py"
+ ],
+ "source": "registry/prompt-builder"
+}

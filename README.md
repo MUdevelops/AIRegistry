@@ -19,6 +19,7 @@
   </a>
 </p>
 
+<<<<<<< HEAD
 ### **Install AI capabilities, not libraries.**
 
 <p>
@@ -27,6 +28,15 @@
 </p>
 
 <p>
+=======
+<p align="center">
+  An open-source registry and dependency-free CLI for reusable AI components, agents, tools, retrieval helpers, memory utilities, and project building blocks.
+</p>
+
+<p align="center">
+  <a href="https://airegistry.instantregret96.workers.dev">Live Registry</a>
+  ·
+>>>>>>> b36442e (Polish AIRegistry for public launch)
   <a href="https://github.com/MUdevelops/AIRegistry">GitHub</a>
   ·
   <a href="https://airegistry.instantregret96.workers.dev">Live Registry</a>
@@ -34,12 +44,22 @@
   <a href="https://github.com/MUdevelops/AIRegistry/issues">Issues</a>
   ·
   <a href="https://github.com/MUdevelops/AIRegistry/pulls">Pull Requests</a>
+<<<<<<< HEAD
+=======
+</p>
+
+<p align="center">
+  <a href="https://github.com/MUdevelops/AIRegistry/actions/workflows/ci.yml"><img src="https://github.com/MUdevelops/AIRegistry/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/MUdevelops/AIRegistry/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-111827.svg" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/components-13-111827.svg" alt="13 components">
+>>>>>>> b36442e (Polish AIRegistry for public launch)
 </p>
 
 </div>
 
 <img src="./readme_assets/01-overview.gif" alt="Animated overview section" width="100%"/>
 
+<<<<<<< HEAD
 ## ✦ What is AIRegistry?
 
 AI development repeatedly needs the same small building blocks: retrieval, memory,
@@ -372,3 +392,202 @@ The direction is developer-owned AI infrastructure:
 <img src="./readme_assets/Footer.png" alt="AIRegistry futuristic transparent footer" width="100%"/>
 
 </div>
+=======
+AIRegistry is a small, source-first catalog for reusable AI building blocks.
+
+Instead of installing another large framework, you can discover a focused component, inspect its source, and add it directly to your project.
+
+```text
+search → inspect → add → build
+```
+
+The project has two parts:
+
+- **CLI + registry:** dependency-free Python tooling for discovering, validating, installing, updating, and removing components.
+- **Web catalog + publisher:** a static component catalog with GitHub authentication and a review-first submission workflow powered by a Cloudflare Worker.
+
+The catalog currently contains **13 components** covering agents, chat starters, retrieval, memory, prompting, text processing, citations, validation, and tools.
+
+## Why AIRegistry?
+
+AIRegistry is designed around a few simple principles:
+
+**Small.** Components should solve one clear problem.
+
+**Readable.** Source should be understandable before it is installed.
+
+**Auditable.** Registry metadata, file lists, and SHA-256 checksums make what is installed explicit.
+
+**Offline-friendly.** The core CLI does not require an AI provider or a runtime service just to inspect and install registry content.
+
+**Review-first.** Community submissions go through GitHub Pull Requests instead of writing directly to `main`.
+
+## Quick start
+
+Clone the repository and use the CLI directly with Python 3.11+:
+
+```bash
+git clone https://github.com/MUdevelops/AIRegistry.git
+cd AIRegistry
+python ai.py search rag
+python ai.py info rag
+python ai.py add rag --dry-run
+python ai.py add rag
+python ai.py list
+```
+
+Remove an installed component with:
+
+```bash
+python ai.py remove rag
+```
+
+The CLI keeps installed components separate from the registry source tree.
+
+## Current component catalog
+
+| Component | Purpose |
+|---|---|
+| `agent` | Small agent/planning starter |
+| `chat` | Minimal chat-oriented template |
+| `citation-builder` | Numbered citations and bibliographies |
+| `citations` | Lightweight citation helpers |
+| `context-builder` | Build structured prompt context from retrieved passages |
+| `conversation-memory` | Small local conversation store |
+| `json-validator` | Validate JSON and report useful diagnostics |
+| `keyword-rag` | Lightweight keyword retrieval |
+| `memory` | Simple local persistent memory |
+| `prompt-builder` | Compose reusable prompt sections |
+| `rag` | Minimal retrieval workflow starter |
+| `text-chunker` | Character/word chunking with overlap |
+| `tool-router` | Register and safely route named tools |
+
+Browse the complete catalog at the [live registry](https://airegistry.instantregret96.workers.dev).
+
+## Registry format
+
+Each component lives under `registry/<name>/` and contains:
+
+```text
+registry/<name>/
+├── component.json
+├── README.md
+└── src/
+    └── ...
+```
+
+`component.json` provides the machine-readable metadata used to build the registry index. The generated indexes are:
+
+```text
+registry.json
+website/registry.json
+```
+
+Run the index builder with:
+
+```bash
+python scripts/build_registry.py
+python scripts/build_registry.py --check
+```
+
+`--check` verifies that committed registry indexes match the component directories.
+
+## Dependencies
+
+Components may declare other AIRegistry components as dependencies. Dependencies are metadata and are **not automatically installed** by `ai add`.
+
+For example:
+
+```text
+context-builder
+└── keyword-rag
+```
+
+Optional dependencies are marked explicitly in the component manifest and displayed by the CLI/catalog.
+
+## Community publishing
+
+The website includes a review-first publisher:
+
+```text
+GitHub sign-in
+      ↓
+Submit Component
+      ↓
+AIRegistry Worker validation
+      ↓
+GitHub App
+      ↓
+branch + commit
+      ↓
+Pull Request
+      ↓
+CI + maintainer review
+      ↓
+merge
+```
+
+No submitted component is written directly to `main` by the web form.
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for the component format, validation rules, testing workflow, and Pull Request process.
+
+## Architecture
+
+```text
+                    GitHub Repository
+                           │
+                 registry/ + tests/ + CLI
+                           │
+                    build_registry.py
+                           │
+              ┌────────────┴────────────┐
+              ▼                         ▼
+        registry.json            website/registry.json
+              │                         │
+              ▼                         ▼
+           CLI                        Web Catalog
+                                        │
+                              Cloudflare Worker
+                                ┌───────┴───────┐
+                                ▼               ▼
+                              OAuth         Publisher
+                                                │
+                                            GitHub PR
+```
+
+The public catalog is static. The Worker is used for authentication and the GitHub-backed publishing API.
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the repository-level design.
+
+## Development
+
+Run the complete local validation suite:
+
+```bash
+python scripts/build_registry.py --check
+python -m unittest discover -s tests -v
+python -m py_compile ai.py scripts/build_registry.py
+node --check website/app.js
+node --check cloudflare/worker.js
+```
+
+For the website/Worker deployment configuration, see [docs/CLOUD_AUTH.md](docs/CLOUD_AUTH.md).
+
+For production monitoring and operational checks, see [docs/MONITORING.md](docs/MONITORING.md).
+
+## Security
+
+AIRegistry treats registry content and community submissions as untrusted input. The CLI validates paths and checksums before installation, while the publisher validates component metadata and file layout before opening a Pull Request.
+
+Please read [SECURITY.md](SECURITY.md) before reporting a vulnerability or changing the publishing/authentication code.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Project status
+
+AIRegistry is an actively developed open-source project. The current V2 catalog focuses on a small number of composable building blocks rather than a large dependency-heavy framework.
+
+The preferred way to improve the project is through focused, reviewable Pull Requests with tests and documentation updates included in the same change.
+>>>>>>> b36442e (Polish AIRegistry for public launch)
