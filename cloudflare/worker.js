@@ -785,223 +785,93 @@ function validateSubmission(input) {
     return { ok: false, error: "invalid_json" };
   }
 
+  const mode = input.publish_mode === "release" ? "release" : "new";
   const name = input.name;
   const version = input.version;
   const description = input.description;
   const category = input.category;
   const runtime = input.runtime;
   const license = input.license;
-  const tags = input.tags;
-  const dependencies = Array.isArray(input.dependencies)
-  ? input.dependencies
-  : [];
+  const tags = Array.isArray(input.tags) ? input.tags : [];
+  const dependencies = Array.isArray(input.dependencies) ? input.dependencies : [];
+  const releaseNotes = typeof input.release_notes === "string" ? input.release_notes.trim() : "";
   const files = input.files;
 
-  if (!isSafeComponentName(name)) {
-    return {
-      ok: false,
-      error: "invalid_name",
-      message:
-        "name must use lowercase letters, numbers and hyphens."
-    };
-  }
+  if (!isSafeComponentName(name)) return { ok: false, error: "invalid_name", message: "name must use lowercase letters, numbers and hyphens." };
+  if (!isSafeVersion(version)) return { ok: false, error: "invalid_version", message: "version must be MAJOR.MINOR.PATCH." };
+  if (releaseNotes.length > 2000) return { ok: false, error: "invalid_release_notes" };
+  if (typeof description !== "string" || description.length < 1 || description.length > 280) return { ok: false, error: "invalid_description" };
+  if (typeof category !== "string" || !/^[a-z0-9-]{1,32}$/.test(category)) return { ok: false, error: "invalid_category" };
+  if (typeof runtime !== "string" || !/^[a-zA-Z0-9+.#_-]{1,32}$/.test(runtime)) return { ok: false, error: "invalid_runtime" };
+  if (typeof license !== "string" || !/^[A-Za-z0-9.+-]{1,32}$/.test(license)) return { ok: false, error: "invalid_license" };
 
-  if (!isSafeVersion(version)) {
-    return {
-      ok: false,
-      error: "invalid_version",
-      message: "version must be MAJOR.MINOR.PATCH."
-    };
-  }
-
-  if (
-    typeof description !== "string" ||
-    description.length < 1 ||
-    description.length > 280
-  ) {
-    return {
-      ok: false,
-      error: "invalid_description"
-    };
-  }
-
-  if (
-    typeof category !== "string" ||
-    !/^[a-z0-9-]{1,32}$/.test(category)
-  ) {
-    return {
-      ok: false,
-      error: "invalid_category"
-    };
-  }
-
-  if (
-    typeof runtime !== "string" ||
-    !/^[a-zA-Z0-9+.#_-]{1,32}$/.test(runtime)
-  ) {
-    return {
-      ok: false,
-      error: "invalid_runtime"
-    };
-  }
-
-  if (
-    typeof license !== "string" ||
-    !/^[A-Za-z0-9.+-]{1,32}$/.test(license)
-  ) {
-    return {
-      ok: false,
-      error: "invalid_license"
-    };
-  }
-
-  if (dependencies.length > 20) {
-  return {
-    ok: false,
-    error: "invalid_dependencies"
-  };
-}
-
-if (
-  !dependencies.every(
+  if (dependencies.length > 20 || !dependencies.every(
     (dependency) =>
       typeof dependency === "string" &&
-      /^[a-z0-9][a-z0-9-]{1,39}( \(optional\))?$/.test(
-        dependency
-      )
-  )
-) {
-  return {
-    ok: false,
-    error: "invalid_dependencies"
-  };
-}
-
-const dependencyNames = dependencies.map((dependency) =>
-  dependency.replace(/ \(optional\)$/, "")
-);
-
-if (new Set(dependencyNames).size !== dependencyNames.length) {
-  return {
-    ok: false,
-    error: "duplicate_dependencies"
-  };
-}
-
-  if (
-    !tags.every(
-      (tag) =>
-        typeof tag === "string" &&
-        /^[a-z0-9-]{1,32}$/.test(tag)
-    )
-  ) {
+      /^[a-z0-9][a-z0-9-]{0,39}@\d+\.\d+\.\d+( \(optional\))?$/.test(dependency)
+  )) {
     return {
       ok: false,
-      error: "invalid_tags"
+      error: "invalid_dependencies",
+      message: "Dependencies must use name@MAJOR.MINOR.PATCH, optionally followed by ' (optional)'."
     };
   }
 
-  if (
-    !Array.isArray(files) ||
-    files.length < 2 ||
-    files.length > 20
-  ) {
-    return {
-      ok: false,
-      error: "invalid_files",
-      message:
-        "Include README.md and at least one src/ file."
-    };
+  const dependencyNames = dependencies.map((dependency) =>
+    dependency.replace(/ \(optional\)$/, "")
+  );
+
+  if (new Set(dependencyNames).size !== dependencyNames.length) {
+    return { ok: false, error: "duplicate_dependencies" };
+  }
+
+  if (dependencyNames.some((dependency) => dependency.startsWith(`${name}@`))) {
+    return { ok: false, error: "self_dependency" };
+  }
+
+  if (!tags.every((tag) => typeof tag === "string" && /^[a-z0-9-]{1,32}$/.test(tag))) {
+    return { ok: false, error: "invalid_tags" };
+  }
+
+  if (!Array.isArray(files) || files.length < 2 || files.length > 20) {
+    return { ok: false, error: "invalid_files", message: "Include README.md and at least one src/ file." };
   }
 
   const seen = new Set();
   let totalBytes = 0;
 
   for (const file of files) {
-    if (!file || typeof file !== "object") {
-      return {
-        ok: false,
-        error: "invalid_file"
-      };
-    }
-
+    if (!file || typeof file !== "object") return { ok: false, error: "invalid_file" };
     const path = file.path;
     const content = file.content;
-
-    if (!isSafePath(path)) {
-      return {
-        ok: false,
-        error: "unsafe_file_path",
-        message: `Unsafe path: ${path}`
-      };
-    }
-
-    if (seen.has(path)) {
-      return {
-        ok: false,
-        error: "duplicate_file",
-        message: `Duplicate path: ${path}`
-      };
-    }
-
+    if (!isSafePath(path)) return { ok: false, error: "unsafe_file_path", message: `Unsafe path: ${path}` };
+    if (seen.has(path)) return { ok: false, error: "duplicate_file", message: `Duplicate path: ${path}` };
     seen.add(path);
+    if (typeof content !== "string") return { ok: false, error: "invalid_file_content" };
 
-    if (typeof content !== "string") {
-      return {
-        ok: false,
-        error: "invalid_file_content"
-      };
-    }
-
-    const bytes =
-      new TextEncoder().encode(content).byteLength;
-
-    if (bytes > 50000) {
-      return {
-        ok: false,
-        error: "file_too_large",
-        message: `${path} is too large.`
-      };
-    }
-
+    const bytes = new TextEncoder().encode(content).byteLength;
+    if (bytes > 50000) return { ok: false, error: "file_too_large", message: `${path} is too large.` };
     totalBytes += bytes;
   }
 
-  if (!seen.has("README.md")) {
-    return {
-      ok: false,
-      error: "missing_readme"
-    };
-  }
-
-  if (
-    ![...seen].some((p) => p.startsWith("src/"))
-  ) {
-    return {
-      ok: false,
-      error: "missing_source"
-    };
-  }
-
-  if (totalBytes > 200000) {
-    return {
-      ok: false,
-      error: "submission_too_large"
-    };
-  }
+  if (!seen.has("README.md")) return { ok: false, error: "missing_readme" };
+  if (![...seen].some((p) => p.startsWith("src/"))) return { ok: false, error: "missing_source" };
+  if (totalBytes > 200000) return { ok: false, error: "submission_too_large" };
 
   return {
     ok: true,
     value: {
-        name,
-        version,
-        description,
-        category,
-        runtime,
-        license,
-        tags: [...new Set(tags)].sort(),
-        dependencies: [...dependencies].sort(),
-        files
+      publish_mode: mode,
+      name,
+      version,
+      description,
+      category,
+      runtime,
+      license,
+      tags: [...new Set(tags)].sort(),
+      dependencies: [...dependencies].sort(),
+      release_notes: releaseNotes || "Release published through AIRegistry.",
+      files
     }
   };
 }
@@ -1131,82 +1001,115 @@ async function createBlob(env, token, content) {
 }
 
 async function handlePublisherSubmit(request, env) {
-  const user =
-    await getAuthenticatedAiRegistryUser(
-      request,
-      env
-    );
+  const user = await getAuthenticatedAiRegistryUser(request, env);
 
   if (!user) {
-    return response(
-      JSON.stringify({
-        error: "authentication_required"
-      }),
-      401,
-      {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-store"
-      }
-    );
+    return response(JSON.stringify({ error: "authentication_required" }), 401, {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store"
+    });
   }
 
   try {
     const input = await request.json();
-
-    const validation =
-      validateSubmission(input);
+    const validation = validateSubmission(input);
 
     if (!validation.ok) {
-      return response(
-        JSON.stringify(validation),
-        400,
-        {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store"
-        }
-      );
+      return response(JSON.stringify(validation), 400, {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      });
     }
 
     const component = validation.value;
+    const token = await getInstallationToken(env);
+    const registry = await getMainRegistry(env, token);
 
-    const token =
-      await getInstallationToken(env);
-
-    const registry =
-      await getMainRegistry(env, token);
-
-    const exists = registry.components.some(
-      (item) => item.name === component.name
-    );
-
-    if (exists) {
-      return response(
-        JSON.stringify({
-          error: "component_exists",
-          message:
-            `Component '${component.name}' already exists.`
-        }),
-        409,
-        {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store"
-        }
-      );
+    if (registry.schema_version !== 2 || !Array.isArray(registry.components)) {
+      throw new Error("Repository registry is not schema version 2.");
     }
 
-    const fileContents = {};
+    const existing = registry.components.find((item) => item.name === component.name);
+    const semver = (value) => value.split(".").map(Number);
+    const compare = (a, b) => {
+      const av = semver(a), bv = semver(b);
+      for (let i = 0; i < 3; i++) if (av[i] !== bv[i]) return av[i] - bv[i];
+      return 0;
+    };
 
-    for (const file of component.files) {
-      fileContents[file.path] = file.content;
+    if (component.publish_mode === "new" && existing) {
+      return response(JSON.stringify({
+        error: "component_exists",
+        message: `Component '${component.name}' already exists. Choose "New Version".`
+      }), 409, {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      });
+    }
+
+    if (component.publish_mode === "release" && !existing) {
+      return response(JSON.stringify({
+        error: "component_not_found",
+        message: `Component '${component.name}' does not exist. Choose "New Component".`
+      }), 404, {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      });
+    }
+
+    if (existing) {
+      if (existing.versions.some((release) => release.version === component.version)) {
+        return response(JSON.stringify({
+          error: "version_exists",
+          message: `Release '${component.name}@${component.version}' already exists.`
+        }), 409, {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        });
+      }
+      if (compare(component.version, existing.latest_version) <= 0) {
+        return response(JSON.stringify({
+          error: "version_not_newer",
+          message: `New version must be greater than latest version ${existing.latest_version}.`
+        }), 409, {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        });
+      }
+    }
+
+    for (const dependency of component.dependencies) {
+      const raw = dependency.replace(/ \(optional\)$/, "");
+      const at = raw.lastIndexOf("@");
+      const dependencyName = raw.slice(0, at);
+      const dependencyVersion = raw.slice(at + 1);
+      const dependencyComponent = registry.components.find((item) => item.name === dependencyName);
+      if (!dependencyComponent) {
+        return response(JSON.stringify({
+          error: "dependency_not_found",
+          message: `Dependency '${raw}' was not found in the registry.`
+        }), 400, {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        });
+      }
+      if (!dependencyComponent.versions.some((release) => release.version === dependencyVersion)) {
+        return response(JSON.stringify({
+          error: "dependency_version_not_found",
+          message: `Dependency release '${raw}' was not found in the registry.`
+        }), 400, {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        });
+      }
     }
 
     const checksums = {};
-
     for (const file of component.files) {
-      checksums[file.path] =
-        await sha256Hex(file.content);
+      checksums[file.path] = await sha256Hex(file.content);
     }
 
+    const source = `registry/${component.name}/versions/${component.version}`;
     const manifest = {
       name: component.name,
       version: component.version,
@@ -1216,321 +1119,192 @@ async function handlePublisherSubmit(request, env) {
       license: component.license,
       tags: component.tags,
       dependencies: component.dependencies,
-      files: component.files
-        .map((f) => f.path)
-        .sort(),
+      release_notes: component.release_notes,
+      files: component.files.map((f) => f.path).sort(),
       sha256: checksums,
-      source: `registry/${component.name}`
+      source
     };
 
-    registry.components.push(manifest);
-
-    registry.components.sort(
-      (a, b) =>
-        a.name.localeCompare(b.name)
-    );
-
-    const registryText = canonicalRegistryJson(registry);
-
-    const websiteRegistryText = registryText;
-
-    const refResponse = await githubApi(
-      `/repos/${encodeURIComponent(
-        env.GITHUB_REPO_OWNER
-      )}/${encodeURIComponent(
-        env.GITHUB_REPO_NAME
-      )}/git/ref/heads/main`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-
-    if (!refResponse.ok) {
-      throw new Error(
-        `Cannot read main branch (${refResponse.status})`
-      );
-    }
-
-    const refData = await refResponse.json();
-    const baseCommitSha =
-      refData.object.sha;
-
-    const commitResponse =
-      await githubApi(
-        `/repos/${encodeURIComponent(
-          env.GITHUB_REPO_OWNER
-        )}/${encodeURIComponent(
-          env.GITHUB_REPO_NAME
-        )}/git/commits/${baseCommitSha}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-    if (!commitResponse.ok) {
-      throw new Error(
-        `Cannot read base commit (${commitResponse.status})`
-      );
-    }
-
-    const commitData =
-      await commitResponse.json();
-
-    const treeEntries = [];
-
-    const manifestText =
-      JSON.stringify(manifest, null, 2) + "\n";
-
-    const manifestSha =
-      await createBlob(
-        env,
-        token,
-        manifestText
-      );
-
-    treeEntries.push({
-      path:
-        `registry/${component.name}/component.json`,
-      mode: "100644",
-      type: "blob",
-      sha: manifestSha
-    });
-
-    for (const file of component.files) {
-      const blobSha =
-        await createBlob(
-          env,
-          token,
-          file.content
-        );
-
-      treeEntries.push({
-        path:
-          `registry/${component.name}/${file.path}`,
-        mode: "100644",
-        type: "blob",
-        sha: blobSha
+    if (existing) {
+      existing.versions.push(manifest);
+      existing.versions.sort((a, b) => compare(b.version, a.version));
+      existing.latest_version = existing.versions[0].version;
+      const latest = existing.versions[0];
+      existing.description = latest.description;
+      existing.category = latest.category;
+      existing.runtime = latest.runtime;
+      existing.license = latest.license;
+      existing.tags = latest.tags;
+    } else {
+      registry.components.push({
+        name: component.name,
+        description: manifest.description,
+        category: manifest.category,
+        runtime: manifest.runtime,
+        license: manifest.license,
+        tags: manifest.tags,
+        latest_version: manifest.version,
+        versions: [manifest]
       });
     }
 
-    const registrySha =
-      await createBlob(
-        env,
-        token,
-        registryText
-      );
+    registry.components.sort((a, b) => a.name.localeCompare(b.name));
+    const registryText = canonicalRegistryJson(registry);
+    const websiteRegistryText = registryText;
 
-    const websiteRegistrySha =
-      await createBlob(
-        env,
-        token,
-        websiteRegistryText
-      );
+    const owner = encodeURIComponent(env.GITHUB_REPO_OWNER);
+    const repo = encodeURIComponent(env.GITHUB_REPO_NAME);
+
+    const refResponse = await githubApi(`/repos/${owner}/${repo}/git/ref/heads/main`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!refResponse.ok) throw new Error(`Cannot read main branch (${refResponse.status})`);
+    const refData = await refResponse.json();
+    const baseCommitSha = refData.object.sha;
+
+    const commitResponse = await githubApi(`/repos/${owner}/${repo}/git/commits/${baseCommitSha}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!commitResponse.ok) throw new Error(`Cannot read base commit (${commitResponse.status})`);
+    const commitData = await commitResponse.json();
+
+    const treeEntries = [];
+    const manifestText = JSON.stringify(manifest, null, 2) + "\n";
+    treeEntries.push({
+      path: `${source}/component.json`,
+      mode: "100644",
+      type: "blob",
+      sha: await createBlob(env, token, manifestText)
+    });
+
+    for (const file of component.files) {
+      treeEntries.push({
+        path: `${source}/${file.path}`,
+        mode: "100644",
+        type: "blob",
+        sha: await createBlob(env, token, file.content)
+      });
+    }
 
     treeEntries.push({
       path: "registry.json",
       mode: "100644",
       type: "blob",
-      sha: registrySha
+      sha: await createBlob(env, token, registryText)
     });
 
     treeEntries.push({
       path: "website/registry.json",
       mode: "100644",
       type: "blob",
-      sha: websiteRegistrySha
+      sha: await createBlob(env, token, websiteRegistryText)
     });
 
-    const treeResponse =
-      await githubApi(
-        `/repos/${encodeURIComponent(
-          env.GITHUB_REPO_OWNER
-        )}/${encodeURIComponent(
-          env.GITHUB_REPO_NAME
-        )}/git/trees`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            base_tree:
-              commitData.tree.sha,
-            tree: treeEntries
-          })
-        }
-      );
-
+    const treeResponse = await githubApi(`/repos/${owner}/${repo}/git/trees`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        base_tree: commitData.tree.sha,
+        tree: treeEntries
+      })
+    });
     if (!treeResponse.ok) {
-      const text =
-        await treeResponse.text();
-
-      throw new Error(
-        `Tree creation failed (${treeResponse.status}): ${text.slice(
-          0,
-          300
-        )}`
-      );
+      const text = await treeResponse.text();
+      throw new Error(`Tree creation failed (${treeResponse.status}): ${text.slice(0, 300)}`);
     }
 
-    const treeData =
-      await treeResponse.json();
+    const treeData = await treeResponse.json();
+    const branch = `registry/${component.name}-${component.version}-${Date.now()}`;
 
-    const branch =
-      `registry/${component.name}-${Date.now()}`;
-
-    const newCommitResponse =
-      await githubApi(
-        `/repos/${encodeURIComponent(
-          env.GITHUB_REPO_OWNER
-        )}/${encodeURIComponent(
-          env.GITHUB_REPO_NAME
-        )}/git/commits`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message:
-              `Add component: ${component.name}`,
-            tree: treeData.sha,
-            parents: [baseCommitSha]
-          })
-        }
-      );
-
+    const newCommitResponse = await githubApi(`/repos/${owner}/${repo}/git/commits`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: `${component.publish_mode === "release" ? "Release" : "Add component"}: ${component.name}@${component.version}`,
+        tree: treeData.sha,
+        parents: [baseCommitSha]
+      })
+    });
     if (!newCommitResponse.ok) {
-      const text =
-        await newCommitResponse.text();
-
-      throw new Error(
-        `Commit creation failed (${newCommitResponse.status}): ${text.slice(
-          0,
-          300
-        )}`
-      );
+      const text = await newCommitResponse.text();
+      throw new Error(`Commit creation failed (${newCommitResponse.status}): ${text.slice(0, 300)}`);
     }
 
-    const newCommit =
-      await newCommitResponse.json();
+    const newCommit = await newCommitResponse.json();
 
-    const refCreateResponse =
-      await githubApi(
-        `/repos/${encodeURIComponent(
-          env.GITHUB_REPO_OWNER
-        )}/${encodeURIComponent(
-          env.GITHUB_REPO_NAME
-        )}/git/refs`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            ref: `refs/heads/${branch}`,
-            sha: newCommit.sha
-          })
-        }
-      );
-
+    const refCreateResponse = await githubApi(`/repos/${owner}/${repo}/git/refs`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: newCommit.sha })
+    });
     if (!refCreateResponse.ok) {
-      const text =
-        await refCreateResponse.text();
-
-      throw new Error(
-        `Branch creation failed (${refCreateResponse.status}): ${text.slice(
-          0,
-          300
-        )}`
-      );
+      const text = await refCreateResponse.text();
+      throw new Error(`Branch creation failed (${refCreateResponse.status}): ${text.slice(0, 300)}`);
     }
 
-    const prResponse =
-      await githubApi(
-        `/repos/${encodeURIComponent(
-          env.GITHUB_REPO_OWNER
-        )}/${encodeURIComponent(
-          env.GITHUB_REPO_NAME
-        )}/pulls`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            title:
-              `Add component: ${component.name}`,
-            body:
-              `## AIRegistry Component\n\n` +
-              `Submitted by @${user.login} through AIRegistry.\n\n` +
-              `- Component: \`${component.name}\`\n` +
-              `- Version: \`${component.version}\`\n` +
-              `- Runtime: \`${component.runtime}\`\n` +
-              `- Category: \`${component.category}\`\n\n` +
-              `The AIRegistry Worker generated the manifest and registry indexes. ` +
-              `Please review the source and automated checks before merging.`,
-            head: branch,
-            base: "main",
-            draft: false,
-            maintainer_can_modify: true
-          })
-        }
-      );
+    const title = `${component.publish_mode === "release" ? "Release" : "Add component"}: ${component.name}@${component.version}`;
+    const prResponse = await githubApi(`/repos/${owner}/${repo}/pulls`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title,
+        body:
+          `## AIRegistry ${component.publish_mode === "release" ? "Release" : "Component"}\n\n` +
+          `Submitted by @${user.login} through AIRegistry.\n\n` +
+          `- Component: \`${component.name}\`\n` +
+          `- Version: \`${component.version}\`\n` +
+          `- Runtime: \`${component.runtime}\`\n` +
+          `- Category: \`${component.category}\`\n` +
+          `- Release notes: ${component.release_notes}\n\n` +
+          `The AIRegistry Worker generated the immutable version manifest and registry indexes. ` +
+          `Review the source, dependencies and automated checks before merging.`,
+        head: branch,
+        base: "main",
+        draft: false,
+        maintainer_can_modify: true
+      })
+    });
 
     if (!prResponse.ok) {
-      const text =
-        await prResponse.text();
-
-      throw new Error(
-        `Pull request creation failed (${prResponse.status}): ${text.slice(
-          0,
-          300
-        )}`
-      );
+      const text = await prResponse.text();
+      throw new Error(`Pull request creation failed (${prResponse.status}): ${text.slice(0, 300)}`);
     }
 
-    const pr =
-      await prResponse.json();
+    const pr = await prResponse.json();
 
-    return response(
-      JSON.stringify({
-        ok: true,
-        component: component.name,
-        version: component.version,
-        submitted_by: user.login,
-        branch,
-        pull_request: pr.html_url
-      }),
-      201,
-      {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-store"
-      }
-    );
+    return response(JSON.stringify({
+      ok: true,
+      mode: component.publish_mode,
+      component: component.name,
+      version: component.version,
+      latest_version: registry.components.find((item) => item.name === component.name).latest_version,
+      submitted_by: user.login,
+      branch,
+      pull_request: pr.html_url
+    }), 201, {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store"
+    });
   } catch (error) {
-    return response(
-      JSON.stringify({
-        error: "publisher_submit_failed",
-        message: String(error.message || error).slice(
-          0,
-          400
-        )
-      }),
-      502,
-      {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-store"
-      }
-    );
+    return response(JSON.stringify({
+      error: "publisher_submit_failed",
+      message: String(error.message || error).slice(0, 400)
+    }), 502, {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store"
+    });
   }
 }
 

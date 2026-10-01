@@ -1,0 +1,22 @@
+{
+  "category": "retrieval",
+  "dependencies": [
+    "keyword-rag@1.0.0"
+  ],
+  "description": "Combine retrieved passages into a structured, size-limited context block for prompts.",
+  "files": [
+    "README.md",
+    "src/context_builder.py"
+  ],
+  "license": "MIT",
+  "name": "context-builder",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/context-builder/versions/1.0.0",
+  "tags": [
+    "context",
+    "rag",
+    "prompt"
+  ],
+  "version": "1.0.0"
+}

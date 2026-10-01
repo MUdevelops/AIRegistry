@@ -1,0 +1,20 @@
+{
+  "category": "tool",
+  "dependencies": [],
+  "description": "JSON-file memory store with substring search.",
+  "files": [
+    "README.md",
+    "src/memory.py"
+  ],
+  "license": "MIT",
+  "name": "memory",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/memory/versions/0.1.0",
+  "tags": [
+    "memory",
+    "storage",
+    "json"
+  ],
+  "version": "0.1.0"
+}

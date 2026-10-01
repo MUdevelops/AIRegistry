@@ -1,0 +1,20 @@
+{
+  "category": "retrieval",
+  "dependencies": [],
+  "description": "Lightweight keyword retrieval over documents, returning ranked relevant context.",
+  "files": [
+    "README.md",
+    "src/keyword_rag.py"
+  ],
+  "license": "MIT",
+  "name": "keyword-rag",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/keyword-rag/versions/1.0.0",
+  "tags": [
+    "rag",
+    "retrieval",
+    "search"
+  ],
+  "version": "1.0.0"
+}

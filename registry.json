@@ -2,309 +2,517 @@
  "components": [
   {
    "category": "agent",
-   "dependencies": [
-    "memory (optional)"
-   ],
    "description": "Minimal tool-calling agent loop with a pluggable planner.",
-   "files": [
-    "README.md",
-    "src/agent.py"
-   ],
+   "latest_version": "0.1.0",
    "license": "MIT",
    "name": "agent",
    "runtime": "python",
-   "sha256": {
-    "README.md": "a10e7f4c33f223feba023de6b670fd82e6b594049fbd11b22ff6384d7570b8cd",
-    "src/agent.py": "c20025d173ccb60e8e61440a08955031abea207e680979f92e10c1e18640e065"
-   },
-   "source": "registry/agent",
    "tags": [
     "agent",
     "tools",
     "loop"
    ],
-   "version": "0.1.0"
+   "versions": [
+    {
+     "category": "agent",
+     "dependencies": [
+      "memory@0.1.0 (optional)"
+     ],
+     "description": "Minimal tool-calling agent loop with a pluggable planner.",
+     "files": [
+      "README.md",
+      "src/agent.py"
+     ],
+     "license": "MIT",
+     "name": "agent",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "a10e7f4c33f223feba023de6b670fd82e6b594049fbd11b22ff6384d7570b8cd",
+      "src/agent.py": "c20025d173ccb60e8e61440a08955031abea207e680979f92e10c1e18640e065"
+     },
+     "source": "registry/agent/versions/0.1.0",
+     "tags": [
+      "agent",
+      "tools",
+      "loop"
+     ],
+     "version": "0.1.0"
+    }
+   ]
   },
   {
    "category": "template",
-   "dependencies": [],
    "description": "Minimal rule-based chat loop; plug in any model client.",
-   "files": [
-    "README.md",
-    "src/chat.py"
-   ],
+   "latest_version": "0.1.0",
    "license": "MIT",
    "name": "chat",
    "runtime": "python",
-   "sha256": {
-    "README.md": "498f0209ff95b3f9dddc3805a00ca126e4028c1e4aed1c03101d1e6936f53ce1",
-    "src/chat.py": "ab80e6213504d6b17ccb7a574905950de8258b1f0e79c6f2bb8678918d4f9a70"
-   },
-   "source": "registry/chat",
    "tags": [
     "chat",
     "cli",
     "starter"
    ],
-   "version": "0.1.0"
+   "versions": [
+    {
+     "category": "template",
+     "dependencies": [],
+     "description": "Minimal rule-based chat loop; plug in any model client.",
+     "files": [
+      "README.md",
+      "src/chat.py"
+     ],
+     "license": "MIT",
+     "name": "chat",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "498f0209ff95b3f9dddc3805a00ca126e4028c1e4aed1c03101d1e6936f53ce1",
+      "src/chat.py": "ab80e6213504d6b17ccb7a574905950de8258b1f0e79c6f2bb8678918d4f9a70"
+     },
+     "source": "registry/chat/versions/0.1.0",
+     "tags": [
+      "chat",
+      "cli",
+      "starter"
+     ],
+     "version": "0.1.0"
+    }
+   ]
   },
   {
    "category": "tool",
-   "dependencies": [],
    "description": "Format numbered source citations and bibliographies from source metadata.",
-   "files": [
-    "README.md",
-    "src/citation_builder.py"
-   ],
+   "latest_version": "1.0.0",
    "license": "MIT",
    "name": "citation-builder",
    "runtime": "python",
-   "sha256": {
-    "README.md": "45f973fa6cd80d287f5d10bfb696bcad5be023155a0884aae7e80c8b888050c7",
-    "src/citation_builder.py": "f8d0ea8c6c097226e51aad0097301d2925c33034dc068f5aae3b5286d14737cd"
-   },
-   "source": "registry/citation-builder",
    "tags": [
     "citations",
     "sources",
     "rag"
    ],
-   "version": "1.0.0"
+   "versions": [
+    {
+     "category": "tool",
+     "dependencies": [],
+     "description": "Format numbered source citations and bibliographies from source metadata.",
+     "files": [
+      "README.md",
+      "src/citation_builder.py"
+     ],
+     "license": "MIT",
+     "name": "citation-builder",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "45f973fa6cd80d287f5d10bfb696bcad5be023155a0884aae7e80c8b888050c7",
+      "src/citation_builder.py": "f8d0ea8c6c097226e51aad0097301d2925c33034dc068f5aae3b5286d14737cd"
+     },
+     "source": "registry/citation-builder/versions/1.0.0",
+     "tags": [
+      "citations",
+      "sources",
+      "rag"
+     ],
+     "version": "1.0.0"
+    }
+   ]
   },
   {
    "category": "tool",
-   "dependencies": [],
    "description": "Format numbered source citations for generated text.",
-   "files": [
-    "README.md",
-    "src/citations.py"
-   ],
+   "latest_version": "0.1.0",
    "license": "MIT",
    "name": "citations",
    "runtime": "python",
-   "sha256": {
-    "README.md": "7bc87656f7a165d347064615b9affe1d9300972526e3c980e982f094ba4e27cf",
-    "src/citations.py": "0cfcaa465d88115e7e139c1e9bb1bdc3db50ac5c096591ac1a38e1fc4b32a471"
-   },
-   "source": "registry/citations",
    "tags": [
     "citations",
     "sources",
     "rag"
    ],
-   "version": "0.1.0"
+   "versions": [
+    {
+     "category": "tool",
+     "dependencies": [],
+     "description": "Format numbered source citations for generated text.",
+     "files": [
+      "README.md",
+      "src/citations.py"
+     ],
+     "license": "MIT",
+     "name": "citations",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "7bc87656f7a165d347064615b9affe1d9300972526e3c980e982f094ba4e27cf",
+      "src/citations.py": "0cfcaa465d88115e7e139c1e9bb1bdc3db50ac5c096591ac1a38e1fc4b32a471"
+     },
+     "source": "registry/citations/versions/0.1.0",
+     "tags": [
+      "citations",
+      "sources",
+      "rag"
+     ],
+     "version": "0.1.0"
+    }
+   ]
   },
   {
    "category": "retrieval",
-   "dependencies": [
-    "keyword-rag"
-   ],
    "description": "Combine retrieved passages into a structured, size-limited context block for prompts.",
-   "files": [
-    "README.md",
-    "src/context_builder.py"
-   ],
+   "latest_version": "1.0.0",
    "license": "MIT",
    "name": "context-builder",
    "runtime": "python",
-   "sha256": {
-    "README.md": "6de9a7115f3146ac079e6053f631e049475b0e9e1a4468f37bf5bb391581e469",
-    "src/context_builder.py": "793619e5c5e665bd9248f39c2902bcdc894af410676f914fca973dbd51344f8f"
-   },
-   "source": "registry/context-builder",
    "tags": [
     "context",
     "rag",
     "prompt"
    ],
-   "version": "1.0.0"
+   "versions": [
+    {
+     "category": "retrieval",
+     "dependencies": [
+      "keyword-rag@1.0.0"
+     ],
+     "description": "Combine retrieved passages into a structured, size-limited context block for prompts.",
+     "files": [
+      "README.md",
+      "src/context_builder.py"
+     ],
+     "license": "MIT",
+     "name": "context-builder",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "6de9a7115f3146ac079e6053f631e049475b0e9e1a4468f37bf5bb391581e469",
+      "src/context_builder.py": "793619e5c5e665bd9248f39c2902bcdc894af410676f914fca973dbd51344f8f"
+     },
+     "source": "registry/context-builder/versions/1.0.0",
+     "tags": [
+      "context",
+      "rag",
+      "prompt"
+     ],
+     "version": "1.0.0"
+    }
+   ]
   },
   {
    "category": "memory",
-   "dependencies": [],
    "description": "Small local in-memory conversation store with add, search, recent and clear.",
-   "files": [
-    "README.md",
-    "src/conversation_memory.py"
-   ],
+   "latest_version": "1.0.0",
    "license": "MIT",
    "name": "conversation-memory",
    "runtime": "python",
-   "sha256": {
-    "README.md": "38eb1613b61f68e73d9a94b4915ac13beb306eb3baa8726ba993fcf1b5c59360",
-    "src/conversation_memory.py": "f0db037eb8269a7663034f720c6b03e3fbf7612f2362594be5fa14c8d4f76cd4"
-   },
-   "source": "registry/conversation-memory",
    "tags": [
     "memory",
     "chat",
     "conversation"
    ],
-   "version": "1.0.0"
+   "versions": [
+    {
+     "category": "memory",
+     "dependencies": [],
+     "description": "Small local in-memory conversation store with add, search, recent and clear.",
+     "files": [
+      "README.md",
+      "src/conversation_memory.py"
+     ],
+     "license": "MIT",
+     "name": "conversation-memory",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "38eb1613b61f68e73d9a94b4915ac13beb306eb3baa8726ba993fcf1b5c59360",
+      "src/conversation_memory.py": "f0db037eb8269a7663034f720c6b03e3fbf7612f2362594be5fa14c8d4f76cd4"
+     },
+     "source": "registry/conversation-memory/versions/1.0.0",
+     "tags": [
+      "memory",
+      "chat",
+      "conversation"
+     ],
+     "version": "1.0.0"
+    }
+   ]
   },
   {
    "category": "validation",
-   "dependencies": [],
    "description": "Validate JSON text and return error position, type, keys and optional schema errors.",
-   "files": [
-    "README.md",
-    "src/json_validator.py"
-   ],
+   "latest_version": "1.0.0",
    "license": "MIT",
    "name": "json-validator",
    "runtime": "python",
-   "sha256": {
-    "README.md": "eded86b6c7747e5f345699affe94f36b760640e04afefc769a9834720f93e38b",
-    "src/json_validator.py": "cce5321361df5103831c900eea2f895a537d29fab3d18717e9d57125b6134ab8"
-   },
-   "source": "registry/json-validator",
    "tags": [
     "json",
     "validation",
     "schema"
    ],
-   "version": "1.0.0"
+   "versions": [
+    {
+     "category": "validation",
+     "dependencies": [],
+     "description": "Validate JSON text and return error position, type, keys and optional schema errors.",
+     "files": [
+      "README.md",
+      "src/json_validator.py"
+     ],
+     "license": "MIT",
+     "name": "json-validator",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "eded86b6c7747e5f345699affe94f36b760640e04afefc769a9834720f93e38b",
+      "src/json_validator.py": "cce5321361df5103831c900eea2f895a537d29fab3d18717e9d57125b6134ab8"
+     },
+     "source": "registry/json-validator/versions/1.0.0",
+     "tags": [
+      "json",
+      "validation",
+      "schema"
+     ],
+     "version": "1.0.0"
+    }
+   ]
   },
   {
    "category": "retrieval",
-   "dependencies": [],
    "description": "Lightweight keyword retrieval over documents, returning ranked relevant context.",
-   "files": [
-    "README.md",
-    "src/keyword_rag.py"
-   ],
+   "latest_version": "1.0.0",
    "license": "MIT",
    "name": "keyword-rag",
    "runtime": "python",
-   "sha256": {
-    "README.md": "9afdfe1e5926495b30a629c3bd3d3987eb33c0a7d68d5d1a664f88fbb93426a4",
-    "src/keyword_rag.py": "61cf8eee5f497875a76e2f134a87fcccc10f6757fa2a2f1f280aec64139002fd"
-   },
-   "source": "registry/keyword-rag",
    "tags": [
     "rag",
     "retrieval",
     "search"
    ],
-   "version": "1.0.0"
+   "versions": [
+    {
+     "category": "retrieval",
+     "dependencies": [],
+     "description": "Lightweight keyword retrieval over documents, returning ranked relevant context.",
+     "files": [
+      "README.md",
+      "src/keyword_rag.py"
+     ],
+     "license": "MIT",
+     "name": "keyword-rag",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "9afdfe1e5926495b30a629c3bd3d3987eb33c0a7d68d5d1a664f88fbb93426a4",
+      "src/keyword_rag.py": "61cf8eee5f497875a76e2f134a87fcccc10f6757fa2a2f1f280aec64139002fd"
+     },
+     "source": "registry/keyword-rag/versions/1.0.0",
+     "tags": [
+      "rag",
+      "retrieval",
+      "search"
+     ],
+     "version": "1.0.0"
+    }
+   ]
   },
   {
    "category": "tool",
-   "dependencies": [],
    "description": "JSON-file memory store with substring search.",
-   "files": [
-    "README.md",
-    "src/memory.py"
-   ],
+   "latest_version": "0.1.0",
    "license": "MIT",
    "name": "memory",
    "runtime": "python",
-   "sha256": {
-    "README.md": "94082a17187c61faacdd6e0cc3e35acbef92215baabaf7f125404059f1ebf38d",
-    "src/memory.py": "79b50ecd284477ebfdc326f7548ce05c0f2a4bb5667870949295c2b95ef6f649"
-   },
-   "source": "registry/memory",
    "tags": [
     "memory",
     "storage",
     "json"
    ],
-   "version": "0.1.0"
+   "versions": [
+    {
+     "category": "tool",
+     "dependencies": [],
+     "description": "JSON-file memory store with substring search.",
+     "files": [
+      "README.md",
+      "src/memory.py"
+     ],
+     "license": "MIT",
+     "name": "memory",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "94082a17187c61faacdd6e0cc3e35acbef92215baabaf7f125404059f1ebf38d",
+      "src/memory.py": "79b50ecd284477ebfdc326f7548ce05c0f2a4bb5667870949295c2b95ef6f649"
+     },
+     "source": "registry/memory/versions/0.1.0",
+     "tags": [
+      "memory",
+      "storage",
+      "json"
+     ],
+     "version": "0.1.0"
+    }
+   ]
   },
   {
    "category": "prompt",
-   "dependencies": [],
    "description": "Build reusable prompts from system, instruction, context and input sections.",
-   "files": [
-    "README.md",
-    "src/prompt_builder.py"
-   ],
+   "latest_version": "1.0.0",
    "license": "MIT",
    "name": "prompt-builder",
    "runtime": "python",
-   "sha256": {
-    "README.md": "fab09b78d8040a8054c9506e54867064ae1c97295484ab5ff9da7f6368a0a002",
-    "src/prompt_builder.py": "0710fdb866f5f339f6d1a8e03a64bd157344956e7918701438c44847679f08eb"
-   },
-   "source": "registry/prompt-builder",
    "tags": [
     "prompt",
     "template",
     "llm"
    ],
-   "version": "1.0.0"
+   "versions": [
+    {
+     "category": "prompt",
+     "dependencies": [],
+     "description": "Build reusable prompts from system, instruction, context and input sections.",
+     "files": [
+      "README.md",
+      "src/prompt_builder.py"
+     ],
+     "license": "MIT",
+     "name": "prompt-builder",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "fab09b78d8040a8054c9506e54867064ae1c97295484ab5ff9da7f6368a0a002",
+      "src/prompt_builder.py": "0710fdb866f5f339f6d1a8e03a64bd157344956e7918701438c44847679f08eb"
+     },
+     "source": "registry/prompt-builder/versions/1.0.0",
+     "tags": [
+      "prompt",
+      "template",
+      "llm"
+     ],
+     "version": "1.0.0"
+    }
+   ]
   },
   {
    "category": "workflow",
-   "dependencies": [
-    "citations (optional)"
-   ],
    "description": "Tiny keyword retriever returning context for a query.",
-   "files": [
-    "README.md",
-    "src/rag.py"
-   ],
+   "latest_version": "0.1.0",
    "license": "MIT",
    "name": "rag",
    "runtime": "python",
-   "sha256": {
-    "README.md": "cb343c0aaa80e32200f12e434452c14dde61c9189c0d5e6fb04d79b19eb7e1a8",
-    "src/rag.py": "71bb6acf55f487c802edcbac01dc6782b9092db3ead126decc10830cc9516c12"
-   },
-   "source": "registry/rag",
    "tags": [
     "rag",
     "retrieval",
     "search"
    ],
-   "version": "0.1.0"
+   "versions": [
+    {
+     "category": "workflow",
+     "dependencies": [
+      "citations@0.1.0 (optional)"
+     ],
+     "description": "Tiny keyword retriever returning context for a query.",
+     "files": [
+      "README.md",
+      "src/rag.py"
+     ],
+     "license": "MIT",
+     "name": "rag",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "cb343c0aaa80e32200f12e434452c14dde61c9189c0d5e6fb04d79b19eb7e1a8",
+      "src/rag.py": "71bb6acf55f487c802edcbac01dc6782b9092db3ead126decc10830cc9516c12"
+     },
+     "source": "registry/rag/versions/0.1.0",
+     "tags": [
+      "rag",
+      "retrieval",
+      "search"
+     ],
+     "version": "0.1.0"
+    }
+   ]
   },
   {
    "category": "text",
-   "dependencies": [],
    "description": "Split text into configurable chunks with overlap, by characters or words.",
-   "files": [
-    "README.md",
-    "src/text_chunker.py"
-   ],
+   "latest_version": "1.0.0",
    "license": "MIT",
    "name": "text-chunker",
    "runtime": "python",
-   "sha256": {
-    "README.md": "5475f2f4faab327cba2537ebd8e1426281e9b430786ee95f8651a5f9191b8708",
-    "src/text_chunker.py": "0cf9f7cb02d0260144a965dca29149108acaad00ccbf3e2407027183bb765b81"
-   },
-   "source": "registry/text-chunker",
    "tags": [
     "chunking",
     "text",
     "rag"
    ],
-   "version": "1.0.0"
+   "versions": [
+    {
+     "category": "text",
+     "dependencies": [],
+     "description": "Split text into configurable chunks with overlap, by characters or words.",
+     "files": [
+      "README.md",
+      "src/text_chunker.py"
+     ],
+     "license": "MIT",
+     "name": "text-chunker",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "5475f2f4faab327cba2537ebd8e1426281e9b430786ee95f8651a5f9191b8708",
+      "src/text_chunker.py": "0cf9f7cb02d0260144a965dca29149108acaad00ccbf3e2407027183bb765b81"
+     },
+     "source": "registry/text-chunker/versions/1.0.0",
+     "tags": [
+      "chunking",
+      "text",
+      "rag"
+     ],
+     "version": "1.0.0"
+    }
+   ]
   },
   {
    "category": "tool",
-   "dependencies": [],
    "description": "Register simple tools and route calls by name, safely rejecting unknown tools.",
-   "files": [
-    "README.md",
-    "src/tool_router.py"
-   ],
+   "latest_version": "1.0.0",
    "license": "MIT",
    "name": "tool-router",
    "runtime": "python",
-   "sha256": {
-    "README.md": "59f9ae4f88836e1aeeb697f84f99fa31f717d8956dcb71930dcd35c283a404ce",
-    "src/tool_router.py": "f0760772f6d7db93332f01d61f0973ebe97fff8fdc0a3bbee33d40c087259151"
-   },
-   "source": "registry/tool-router",
    "tags": [
     "tools",
     "router",
     "agent"
    ],
-   "version": "1.0.0"
+   "versions": [
+    {
+     "category": "tool",
+     "dependencies": [],
+     "description": "Register simple tools and route calls by name, safely rejecting unknown tools.",
+     "files": [
+      "README.md",
+      "src/tool_router.py"
+     ],
+     "license": "MIT",
+     "name": "tool-router",
+     "release_notes": "Initial versioned release in AIRegistry v2.1.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "59f9ae4f88836e1aeeb697f84f99fa31f717d8956dcb71930dcd35c283a404ce",
+      "src/tool_router.py": "f0760772f6d7db93332f01d61f0973ebe97fff8fdc0a3bbee33d40c087259151"
+     },
+     "source": "registry/tool-router/versions/1.0.0",
+     "tags": [
+      "tools",
+      "router",
+      "agent"
+     ],
+     "version": "1.0.0"
+    }
+   ]
   }
  ],
- "version": 1
+ "schema_version": 2
 }

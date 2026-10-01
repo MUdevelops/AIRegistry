@@ -50,6 +50,18 @@ AIRegistry repository through GitHub Pull Requests.
 <form id="submit-form">
 
   <div class="form-section">
+    <h2>Release</h2>
+    <label>
+      Publishing mode
+      <select id="publish-mode">
+        <option value="new">New Component</option>
+        <option value="release">New Version</option>
+      </select>
+    </label>
+    <p id="release-component" hidden>Choose an existing component name and submit a higher semantic version.</p>
+  </div>
+
+  <div class="form-section">
     <h2>Component Information</h2>
 
     <label>
@@ -71,6 +83,16 @@ AIRegistry repository through GitHub Pull Requests.
         pattern="[0-9]+\.[0-9]+\.[0-9]+"
         placeholder="1.0.0"
       >
+    </label>
+
+    <label>
+      Release notes
+      <textarea
+        id="component-release-notes"
+        maxlength="2000"
+        rows="5"
+        placeholder="Describe what changed in this release."
+      ></textarea>
     </label>
 
     <label>

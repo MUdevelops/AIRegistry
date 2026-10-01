@@ -1,0 +1,20 @@
+{
+  "category": "tool",
+  "dependencies": [],
+  "description": "Format numbered source citations and bibliographies from source metadata.",
+  "files": [
+    "README.md",
+    "src/citation_builder.py"
+  ],
+  "license": "MIT",
+  "name": "citation-builder",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/citation-builder/versions/1.0.0",
+  "tags": [
+    "citations",
+    "sources",
+    "rag"
+  ],
+  "version": "1.0.0"
+}

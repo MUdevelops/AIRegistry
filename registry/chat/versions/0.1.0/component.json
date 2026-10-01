@@ -1,0 +1,20 @@
+{
+  "category": "template",
+  "dependencies": [],
+  "description": "Minimal rule-based chat loop; plug in any model client.",
+  "files": [
+    "README.md",
+    "src/chat.py"
+  ],
+  "license": "MIT",
+  "name": "chat",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/chat/versions/0.1.0",
+  "tags": [
+    "chat",
+    "cli",
+    "starter"
+  ],
+  "version": "0.1.0"
+}

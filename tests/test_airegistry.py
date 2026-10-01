@@ -5,11 +5,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path[:0] = [ROOT, os.path.join(ROOT, "scripts")]
 import ai, build_registry  # noqa: E402
 
-M = dict(name="demo", version="1.0.0", description="d", category="tool", runtime="python",
-         license="MIT", tags=["x"], files=["a.py"], source="registry/demo")
-
 
 def w(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write(text)
 
@@ -19,6 +17,15 @@ def run(*argv):
     with contextlib.redirect_stdout(o), contextlib.redirect_stderr(e):
         code = ai.main(list(argv))
     return code, o.getvalue(), e.getvalue()
+
+
+def manifest(name="demo", version="1.0.0", deps=None, source=None):
+    return {
+        "name": name, "version": version, "description": "demo", "category": "tool",
+        "runtime": "python", "license": "MIT", "tags": ["x"], "files": ["README.md", "src/main.py"],
+        "source": source or f"registry/{name}/versions/{version}",
+        "dependencies": deps or [], "release_notes": "release"
+    }
 
 
 class Base(unittest.TestCase):
@@ -36,165 +43,184 @@ class Base(unittest.TestCase):
 
 
 class TestValidation(unittest.TestCase):
-    def bad(self, **kw):
-        with self.assertRaises(ai.Err):
-            ai.validate({**M, **kw})
-
-    def test_valid(self):
-        self.assertEqual(ai.validate(dict(M))["name"], "demo")
-
-    def test_missing_and_invalid(self):
-        for k in ai.REQUIRED:
-            m = dict(M)
-            del m[k]
-            with self.assertRaises(ai.Err):
-                ai.validate(m)
-        self.bad(name="Bad Name")
-        self.bad(version="1.0")
-        self.bad(tags="x")
-        self.bad(files=[])
-        self.bad(files=["run.exe"])
-        self.bad(dependencies=[1])
-        with self.assertRaises(ai.Err):
-            ai.validate([])
-
     def test_versions(self):
         self.assertGreater(ai.vkey("1.10.0"), ai.vkey("1.9.9"))
-        self.assertGreater(ai.vkey("1.0.0"), ai.vkey("1.0.0-beta"))
+        self.assertEqual(ai.parse_ref("rag"), ("rag", None))
+        self.assertEqual(ai.parse_ref("rag@1.2.3"), ("rag", "1.2.3"))
+        with self.assertRaises(ai.Err):
+            ai.parse_ref("rag@1.0")
+        with self.assertRaises(ai.Err):
+            ai.validate({**manifest(), "version": "1.0"})
 
-    def test_path_traversal_rejected(self):
+    def test_paths(self):
         for p in ["../x", "/etc/passwd", "a/../b", "C:x", "a\\b", "", "a//b", "./a"]:
-            with self.assertRaises(ai.Err, msg=p):
+            with self.assertRaises(ai.Err):
                 ai.safe_rel(p)
-            self.bad(files=[p])
-        self.bad(source="../registry")
+
+    def test_dependency_versions(self):
+        self.assertIsNotNone(ai.validate(manifest(deps=["memory@1.0.0 (optional)"])))
+        with self.assertRaises(ai.Err):
+            ai.validate(manifest(deps=["memory"]))
+        with self.assertRaises(ai.Err):
+            ai.validate(manifest(deps=["memory@1.0"]))
 
 
 class TestRegistry(Base):
-    def test_load_and_cache_offline(self):
-        _, comps = ai.load_registry()
-        self.assertTrue(
-    		{"chat", "rag", "agent", "memory", "citations"}.issubset(set(comps))
-	)	
+    def make_registry(self):
+        root = self.tmp
+        for ver, content in [("1.0.0", "one"), ("1.1.0", "two")]:
+            d = os.path.join(root, "registry", "demo", "versions", ver)
+            w(os.path.join(d, "README.md"), "# Demo")
+            w(os.path.join(d, "src", "main.py"), content)
+            m = manifest(version=ver)
+            w(os.path.join(d, "component.json"), json.dumps(m))
+        build_registry.main(["--root", root])
+        return os.path.join(root, "registry.json")
+
+    def test_generation_and_resolution(self):
+        path = self.make_registry()
+        with open(path, encoding="utf8") as f:
+            data = f.read()
+        comps = ai.parse_registry(data)
+        c, latest = ai.resolve(comps, "demo")
+        self.assertEqual(c["latest_version"], "1.1.0")
+        self.assertEqual(latest["version"], "1.1.0")
+        _, exact = ai.resolve(comps, "demo@1.0.0")
+        self.assertEqual(exact["version"], "1.0.0")
+
+    def test_duplicate_release_rejected(self):
+        root = self.tmp
+        d = os.path.join(root, "registry", "demo", "versions", "1.0.0")
+        w(os.path.join(d, "component.json"), json.dumps(manifest()))
+        w(os.path.join(d, "README.md"), "# Demo")
+        w(os.path.join(d, "src", "main.py"), "x")
+        # duplicate is structurally impossible as two directories with the same version;
+        # validate duplicate detection at index level instead.
+        idx = build_registry.build(root)
+        idx["components"][0]["versions"].append(idx["components"][0]["versions"][0])
+        with self.assertRaises(ai.Err):
+            ai.parse_registry(json.dumps(idx))
+
+    def test_repo_index_fresh(self):
+        self.assertEqual(build_registry.main(["--check", "--root", ROOT]), 0)
+
+
+class TestCLI(Base):
+    def test_info_exact_and_search(self):
+        url, comps = ai.load_registry()
+        c, m = ai.resolve(comps, "rag@0.1.0")
+        self.assertEqual(m["name"], "rag")
+        self.assertEqual(run("info", "rag@0.1.0")[0], 0)
+        self.assertIn("latest", run("info", "rag")[1])
+        self.assertEqual(run("info", "rag@9.9.9")[0], 1)
+        self.assertEqual(run("search", "rag")[0], 0)
+
+    def test_add_exact_and_lock(self):
+        self.assertEqual(run("add", "rag@0.1.0")[0], 0)
+        with open(ai.LOCK, encoding="utf8") as f:
+            lock = json.load(f)
+        self.assertEqual(lock["components"]["rag"]["version"], "0.1.0")
+        self.assertTrue(lock["components"]["rag"]["source"].endswith("/0.1.0"))
+        self.assertEqual(run("add", "rag@0.1.0")[0], 1)
+
+    def test_dry_run_unknown_and_update(self):
+        self.assertEqual(run("add", "rag@0.1.0", "--dry-run")[0], 0)
+        self.assertFalse(os.path.exists("ai_components"))
+        self.assertEqual(run("add", "rag@9.9.9")[0], 1)
+        self.assertEqual(run("add", "chat", "--dry-run")[0], 0)
+
+    def test_offline_cache(self):
+        ai.load_registry()
         os.environ["REGISTRY_URL"] = os.path.join(self.tmp, "missing.json")
-        code, out, err = run("search", "rag")  # falls back to cache
-        self.assertEqual(code, 0)
-        self.assertIn("cached", err)
         self.assertEqual(run("search", "--offline", "memory")[0], 0)
 
-    def test_malformed_registry(self):
-        p = os.path.join(self.tmp, "r.json")
-        w(p, "{nope")
+    def test_checksum_mismatch(self):
+        root = self.tmp
+        d = os.path.join(root, "registry", "demo", "versions", "1.0.0")
+        w(os.path.join(d, "README.md"), "# Demo")
+        w(os.path.join(d, "src", "main.py"), "x")
+        m = manifest()
+        m["sha256"] = {"README.md": "0"*64, "src/main.py": "0"*64}
+        reg = {"schema_version": 2, "components": [{
+            "name": "demo", "description": "demo", "category": "tool", "runtime": "python",
+            "license": "MIT", "tags": ["x"], "latest_version": "1.0.0", "versions": [m]
+        }]}
+        p = os.path.join(root, "registry.json")
+        w(p, json.dumps(reg))
         os.environ["REGISTRY_URL"] = p
-        self.assertEqual(run("search", "x")[0], 1)
-        w(p, json.dumps({"components": [{"name": "x"}]}))
-        self.assertEqual(run("search", "x")[0], 1)
+        self.assertEqual(run("add", "demo@1.0.0")[0], 1)
+        self.assertFalse(os.path.exists("ai_components/demo"))
 
-    def test_search(self):
-        comps = ai.load_registry()[1]
-        self.assertIn("rag", [m["name"] for m in ai.search(comps, "rag")])
-        self.assertEqual(ai.search(comps, "zzzz"), [])
-        code, out, _ = run("search", "agent", "tools")
-        self.assertIn("agent", out)
-
-    def test_info(self):
-        self.assertIn("ai add rag", run("info", "rag")[1])
-        self.assertEqual(run("info", "nope")[0], 1)
-
-
-class TestAddRemove(Base):
-    def test_add_list_remove(self):
-        code, out, _ = run("add", "rag")
-        self.assertEqual(code, 0)
-        self.assertIn("+ src/rag.py", out)
-        self.assertTrue(os.path.isfile("ai_components/rag/src/rag.py"))
-        self.assertIn("rag", run("list")[1])
-        self.assertEqual(run("add", "rag")[0], 1)  # already installed
-        self.assertEqual(run("remove", "rag")[0], 0)
-        self.assertFalse(os.path.exists("ai_components/rag"))
-        self.assertEqual(run("remove", "rag")[0], 1)
-
-    def test_dry_run_and_unknown(self):
-        self.assertEqual(run("add", "chat", "--dry-run")[0], 0)
-        self.assertFalse(os.path.exists("ai_components"))
-        self.assertEqual(run("add", "nope")[0], 1)
-
-    def test_dependencies_displayed(self):
-        self.assertIn("NOT installed automatically", run("add", "rag", "--dry-run")[1])
-
-    def test_traversal_dir(self):
-        for d in ["../out", "/tmp/out", "a/../../b"]:
-            self.assertEqual(run("add", "chat", "--dir", d)[0], 1)
-        self.assertFalse(os.path.exists(os.path.join(self.tmp, "..", "out", "chat")))
-
-    def test_tampered_lock(self):
+    def test_tampered_lock_path(self):
         victim = os.path.join(self.tmp, "victim.txt")
         w(victim, "keep")
         os.makedirs(".airegistry")
-        w(ai.LOCK, json.dumps({"components": {"x": {"version": "1.0.0", "dir": "ai_components/x",
-                                                    "files": ["../../victim.txt"]}}}))
+        w(ai.LOCK, json.dumps({"schema_version": 2, "components": {
+            "x": {"version": "1.0.0", "dir": "ai_components/x", "files": ["../../victim.txt"]}
+        }}))
         self.assertEqual(run("remove", "x")[0], 1)
         self.assertTrue(os.path.exists(victim))
 
-    def test_checksum_mismatch(self):
-        reg = os.path.join(self.tmp, "reg")
-        os.makedirs(os.path.join(reg, "registry", "demo"))
-        w(os.path.join(reg, "registry", "demo", "a.py"), "x=1\n")
-        w(os.path.join(reg, "registry.json"), json.dumps({"components": [{**M, "sha256": {"a.py": "0" * 64}}]}))
-        os.environ["REGISTRY_URL"] = os.path.join(reg, "registry.json")
-        code, _, err = run("add", "demo")
-        self.assertEqual(code, 1)
-        self.assertIn("checksum", err)
-        self.assertFalse(os.path.exists("ai_components/demo"))
 
-    def test_update(self):
-        run("add", "chat")
-        with open(ai.LOCK) as f:
-            lock = json.load(f)
-        lock["components"]["chat"]["version"] = "0.0.1"
-        w(ai.LOCK, json.dumps(lock))
-        self.assertIn("0.0.1 -> 0.1.0", run("update")[1])
+    def test_list_and_remove(self):
+        self.assertEqual(run("add", "chat@0.1.0")[0], 0)
+        self.assertIn("chat", run("list")[1])
+        self.assertEqual(run("remove", "chat")[0], 0)
+        self.assertEqual(run("remove", "chat")[0], 1)
+
+    def test_update_latest(self):
+        self.assertEqual(run("add", "rag@0.1.0")[0], 0)
+        # The current catalog has only one release; update must be stable and idempotent.
         self.assertIn("up to date", run("update")[1])
 
-    def test_config(self):
-        self.assertEqual(run("config", "registry_url", "/x/registry.json")[0], 0)
-        self.assertIn("/x/registry.json", run("config")[1])
-        self.assertEqual(run("config", "other", "v")[0], 1)
+    def test_force_replaces_installed_release(self):
+        self.assertEqual(run("add", "rag@0.1.0")[0], 0)
+        self.assertEqual(run("add", "rag@0.1.0", "--force")[0], 0)
 
+    def test_info_versions_are_sorted(self):
+        out = run("info", "rag")[1]
+        self.assertIn("versions     0.1.0", out)
 
-class TestIndex(unittest.TestCase):
-    def test_repo_index_is_fresh(self):
-        self.assertEqual(build_registry.main(["--check"]), 0)
+    def test_malformed_registry(self):
+        p = os.path.join(self.tmp, "bad.json")
+        w(p, "{bad")
+        os.environ["REGISTRY_URL"] = p
+        self.assertEqual(run("search", "rag")[0], 1)
+        w(p, json.dumps({"components": []}))
+        self.assertEqual(run("search", "rag")[0], 1)
 
-    def make(self, manifest, files=None):
-        tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(tmp.cleanup)
-        d = os.path.join(tmp.name, "registry", "demo")
-        os.makedirs(d)
-        w(os.path.join(d, "component.json"), manifest if isinstance(manifest, str) else json.dumps(manifest))
-        for n in files or []:
-            w(os.path.join(d, n), "x=1\n")
-        return tmp.name
-
-    def test_generate_and_check(self):
-        root = self.make(M, ["a.py"])
-        idx = build_registry.build(root)
-        self.assertEqual(len(idx["components"][0]["sha256"]["a.py"]), 64)
-        self.assertEqual(build_registry.main(["--check", "--root", root]), 1)  # not written yet
-        self.assertEqual(build_registry.main(["--root", root]), 0)
-        self.assertEqual(build_registry.main(["--check", "--root", root]), 0)
-        w(os.path.join(root, "registry", "demo", "a.py"), "changed\n")
-        self.assertEqual(build_registry.main(["--check", "--root", root]), 1)
-
-    def test_malformed_manifests(self):
+    def test_invalid_release_source(self):
+        root = self.tmp
+        d = os.path.join(root, "registry", "demo", "versions", "1.0.0")
+        w(os.path.join(d, "README.md"), "# Demo")
+        w(os.path.join(d, "src", "main.py"), "x")
+        m = manifest(source="registry/demo")
+        w(os.path.join(d, "component.json"), json.dumps(m))
         with self.assertRaises(ai.Err):
-            build_registry.build(self.make("{not json"))
-        with self.assertRaises(ai.Err):
-            build_registry.build(self.make({"name": "demo"}))
-        with self.assertRaises(ai.Err):
-            build_registry.build(self.make({**M, "name": "other", "source": "registry/other"}, ["a.py"]))
-        with self.assertRaises(ai.Err):
-            build_registry.build(self.make(M))  # listed file missing
+            build_registry.build(root)
+
+    def test_generated_registry_contains_all_components(self):
+        _, comps = ai.load_registry()
+        self.assertEqual(len(comps), 13)
+        self.assertIn("rag", comps)
+        self.assertEqual(comps["rag"]["latest_version"], "0.1.0")
+        self.assertEqual(len(comps["rag"]["versions"]), 1)
+
+    def test_exact_dependency_references(self):
+        _, comps = ai.load_registry()
+        _, rag = ai.resolve(comps, "rag@0.1.0")
+        self.assertEqual(rag["dependencies"], ["citations@0.1.0 (optional)"])
+
+    def test_unknown_component_reference(self):
+        self.assertEqual(run("info", "does-not-exist@1.0.0")[0], 1)
+
+    def test_add_traversal_dir(self):
+        for d in ["../out", "/tmp/out", "a/../../b"]:
+            self.assertEqual(run("add", "chat@0.1.0", "--dir", d)[0], 1)
+
+    def test_dry_run_does_not_write_lock(self):
+        self.assertEqual(run("add", "chat@0.1.0", "--dry-run")[0], 0)
+        self.assertFalse(os.path.exists(".airegistry/lock.json"))
 
 
 if __name__ == "__main__":

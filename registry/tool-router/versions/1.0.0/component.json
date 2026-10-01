@@ -1,0 +1,20 @@
+{
+  "category": "tool",
+  "dependencies": [],
+  "description": "Register simple tools and route calls by name, safely rejecting unknown tools.",
+  "files": [
+    "README.md",
+    "src/tool_router.py"
+  ],
+  "license": "MIT",
+  "name": "tool-router",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/tool-router/versions/1.0.0",
+  "tags": [
+    "tools",
+    "router",
+    "agent"
+  ],
+  "version": "1.0.0"
+}

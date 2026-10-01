@@ -1,0 +1,20 @@
+{
+  "category": "prompt",
+  "dependencies": [],
+  "description": "Build reusable prompts from system, instruction, context and input sections.",
+  "files": [
+    "README.md",
+    "src/prompt_builder.py"
+  ],
+  "license": "MIT",
+  "name": "prompt-builder",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/prompt-builder/versions/1.0.0",
+  "tags": [
+    "prompt",
+    "template",
+    "llm"
+  ],
+  "version": "1.0.0"
+}

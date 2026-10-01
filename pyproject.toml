@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "airegistry-cli"
+version = "2.1.0"
+description = "Dependency-free CLI for AIRegistry versioned components"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+[project.scripts]
+ai = "ai:main"
+
+[tool.setuptools]
+py-modules = ["ai"]

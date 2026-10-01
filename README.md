@@ -41,3 +41,36 @@ Own the source.
 
 ```text
 search → inspect → add → build
+
+## Versioned releases
+
+AIRegistry v2.1 treats every component release as immutable.
+
+```text
+ai info rag
+ai info rag@0.1.0
+ai add rag
+ai add rag@0.1.0
+ai update
+```
+
+A component can have multiple releases. The registry resolves an unversioned reference to the latest stable release and an explicit `name@version` reference to exactly that release.
+
+### Install the CLI
+
+The CLI has no runtime third-party dependencies. For a developer checkout:
+
+```powershell
+python -m pip install .
+```
+
+Then:
+
+```powershell
+ai search rag
+ai info rag@0.1.0
+```
+
+### Publishing
+
+Authenticated publishers can submit either a new component or a new version. Every submission is validated by the Cloudflare Worker and proposed through a GitHub Pull Request. Existing releases are immutable.

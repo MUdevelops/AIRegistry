@@ -1,0 +1,20 @@
+{
+  "category": "validation",
+  "dependencies": [],
+  "description": "Validate JSON text and return error position, type, keys and optional schema errors.",
+  "files": [
+    "README.md",
+    "src/json_validator.py"
+  ],
+  "license": "MIT",
+  "name": "json-validator",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/json-validator/versions/1.0.0",
+  "tags": [
+    "json",
+    "validation",
+    "schema"
+  ],
+  "version": "1.0.0"
+}

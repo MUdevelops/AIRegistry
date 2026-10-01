@@ -1,0 +1,22 @@
+{
+  "category": "agent",
+  "dependencies": [
+    "memory@0.1.0 (optional)"
+  ],
+  "description": "Minimal tool-calling agent loop with a pluggable planner.",
+  "files": [
+    "README.md",
+    "src/agent.py"
+  ],
+  "license": "MIT",
+  "name": "agent",
+  "release_notes": "Initial versioned release in AIRegistry v2.1.",
+  "runtime": "python",
+  "source": "registry/agent/versions/0.1.0",
+  "tags": [
+    "agent",
+    "tools",
+    "loop"
+  ],
+  "version": "0.1.0"
+}
