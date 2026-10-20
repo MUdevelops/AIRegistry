@@ -6,6 +6,11 @@ import unittest
 
 from _helpers import ROOT, ai, build_registry, run_builder
 
+
+def read_text(path):
+    with open(path, encoding="utf-8", errors="replace") as handle:
+        return handle.read()
+
 EXPECTED = {
     "agent", "citation-builder", "context-builder", "conversation-memory", "json-validator",
     "keyword-rag", "prompt-builder", "query-rewriter", "retrieval-pipeline", "text-chunker", "tool-router",
@@ -37,7 +42,7 @@ class TestRealRegistry(unittest.TestCase):
         for name, comp in self.components.items():
             latest = comp["versions"][0]
             self.assertEqual(latest["version"], comp["latest_version"], name)
-            readme = open(os.path.join(ROOT, latest["source"], "README.md"), encoding="utf-8").read()
+            readme = read_text(os.path.join(ROOT, latest["source"], "README.md"))
             self.assertIn(f"ai add {name}@{latest['version']}", readme, name)
             self.assertIn(f"**Version {latest['version']}**", readme, name)
             for heading in ("## Install", "## Quick start", "## API"):
@@ -49,7 +54,7 @@ class TestRealRegistry(unittest.TestCase):
             latest = comp["versions"][0]
             for rel in latest["files"]:
                 if rel.startswith("src/") and rel.endswith(".py"):
-                    source = open(os.path.join(ROOT, latest["source"], rel), encoding="utf-8").read()
+                    source = read_text(os.path.join(ROOT, latest["source"], rel))
                     self.assertIn(f'__version__ = "{latest["version"]}"', source, f"{name}/{rel}")
                     self.assertIn("__all__", source, f"{name}/{rel}")
                     self.assertTrue(source.lstrip().startswith('"""'), f"{name}/{rel} needs a module docstring")
@@ -65,7 +70,7 @@ class TestRealRegistry(unittest.TestCase):
                 for rel in release["files"]:
                     if not rel.endswith(".py"):
                         continue
-                    tree = __import__("ast").parse(open(os.path.join(ROOT, release["source"], rel), encoding="utf-8").read())
+                    tree = __import__("ast").parse(read_text(os.path.join(ROOT, release["source"], rel)))
                     for node in __import__("ast").walk(tree):
                         mods = []
                         if isinstance(node, __import__("ast").Import):
@@ -82,13 +87,13 @@ class TestRealRegistry(unittest.TestCase):
             for f in files:
                 self.assertFalse(f.endswith((".pyc", ".bak", ".orig", ".rej")), f)
                 if f.endswith((".md", ".py", ".json", ".js", ".html", ".yml", ".toml", ".jsonc")):
-                    text = open(os.path.join(base, f), encoding="utf-8", errors="replace").read()
+                    text = read_text(os.path.join(base, f))
                     self.assertIsNone(CONFLICT.search(text), f"merge conflict marker in {os.path.join(base, f)}")
 
     def test_version_numbers_agree(self):
-        pyproject = open(os.path.join(ROOT, "pyproject.toml"), encoding="utf-8").read()
+        pyproject = read_text(os.path.join(ROOT, "pyproject.toml"))
         self.assertIn(f'version = "{ai.__version__}"', pyproject)
-        changelog = open(os.path.join(ROOT, "CHANGELOG.md"), encoding="utf-8").read()
+        changelog = read_text(os.path.join(ROOT, "CHANGELOG.md"))
         self.assertIn(f"## {ai.__version__}", changelog)
 
     def test_every_release_directory_is_immutable_layout(self):
