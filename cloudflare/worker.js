@@ -810,6 +810,18 @@ function validateSubmission(input) {
   ? input.dependencies
   : [];
   const files = input.files;
+  const releaseNotes =
+    typeof input.release_notes === "string"
+      ? input.release_notes.trim()
+      : "";
+
+  if (releaseNotes.length > 500) {
+    return {
+      ok: false,
+      error: "invalid_release_notes",
+      message: "release notes must be 500 characters or fewer."
+    };
+  }
 
   if (!isSafeComponentName(name)) {
     return {
@@ -880,7 +892,7 @@ if (
   !dependencies.every(
     (dependency) =>
       typeof dependency === "string" &&
-      /^[a-z0-9][a-z0-9-]{1,39}( \(optional\))?$/.test(
+      /^[a-z0-9][a-z0-9-]{1,39}(@\d+\.\d+\.\d+)?( \(optional\))?$/.test(
         dependency
       )
   )
@@ -892,7 +904,7 @@ if (
 }
 
 const dependencyNames = dependencies.map((dependency) =>
-  dependency.replace(/ \(optional\)$/, "")
+  dependency.replace(/ \(optional\)$/, "").replace(/@.*$/, "")
 );
 
 if (new Set(dependencyNames).size !== dependencyNames.length) {
@@ -1015,6 +1027,7 @@ if (new Set(dependencyNames).size !== dependencyNames.length) {
         license,
         tags: [...new Set(tags)].sort(),
         dependencies: [...dependencies].sort(),
+        release_notes: releaseNotes,
         files
     }
   };
@@ -1059,6 +1072,49 @@ function canonicalRegistryJson(value) {
   const json = JSON.stringify(sorted, null, 1);
   return escapeNonAsciiJson(json) + "\n";
 }
+function compareVersions(a, b) {
+  const x = a.split(".").map(Number);
+  const y = b.split(".").map(Number);
+
+  for (let i = 0; i < 3; i++) {
+    if (x[i] !== y[i]) return x[i] - y[i];
+  }
+
+  return 0;
+}
+
+// Registry entries list every release in `versions` (newest first).
+// Flat entries from the old format are upgraded on the fly.
+function toVersionedEntry(entry) {
+  if (Array.isArray(entry.versions)) return entry;
+
+  return {
+    name: entry.name,
+    description: entry.description,
+    category: entry.category,
+    runtime: entry.runtime,
+    license: entry.license,
+    tags: entry.tags,
+    latest_version: entry.version,
+    versions: [entry]
+  };
+}
+
+// Entry-level fields always describe the latest stable release.
+function refreshEntry(entry) {
+  entry.versions.sort((a, b) => compareVersions(b.version, a.version));
+
+  const stable = entry.versions.filter((v) => !v.version.includes("-"));
+  const latest = (stable.length ? stable : entry.versions)[0];
+
+  entry.latest_version = latest.version;
+  entry.description = latest.description;
+  entry.category = latest.category;
+  entry.runtime = latest.runtime;
+  entry.license = latest.license;
+  entry.tags = latest.tags;
+}
+
 async function getMainRegistry(env, token) {
   const owner =
     encodeURIComponent(env.GITHUB_REPO_OWNER);
@@ -1189,16 +1245,22 @@ async function handlePublisherSubmit(request, env) {
     const registry =
       await getMainRegistry(env, token);
 
-    const exists = registry.components.some(
+    registry.components = registry.components.map(toVersionedEntry);
+
+    const existing = registry.components.find(
       (item) => item.name === component.name
     );
 
-    if (exists) {
+    if (
+      existing &&
+      existing.versions.some((v) => v.version === component.version)
+    ) {
       return response(
         JSON.stringify({
-          error: "component_exists",
+          error: "release_exists",
           message:
-            `Component '${component.name}' already exists.`
+            `Release '${component.name}@${component.version}' already exists. ` +
+            "Published releases are immutable; submit a new version instead."
         }),
         409,
         {
@@ -1208,11 +1270,43 @@ async function handlePublisherSubmit(request, env) {
       );
     }
 
-    const fileContents = {};
+    const resolvedDependencies = [];
 
-    for (const file of component.files) {
-      fileContents[file.path] = file.content;
+    for (const dependency of component.dependencies) {
+      const optional = / \(optional\)$/.test(dependency);
+      const [depName, depVersion] = dependency
+        .replace(/ \(optional\)$/, "")
+        .split("@");
+      const target = registry.components.find(
+        (item) => item.name === depName
+      );
+      const version = depVersion || (target && target.latest_version);
+
+      if (
+        !target ||
+        depName === component.name ||
+        !target.versions.some((v) => v.version === version)
+      ) {
+        return response(
+          JSON.stringify({
+            error: "unknown_dependency",
+            message:
+              `Dependency '${dependency}' is not in the registry.`
+          }),
+          400,
+          {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-store"
+          }
+        );
+      }
+
+      resolvedDependencies.push(
+        `${depName}@${version}${optional ? " (optional)" : ""}`
+      );
     }
+
+    resolvedDependencies.sort();
 
     const checksums = {};
 
@@ -1220,6 +1314,9 @@ async function handlePublisherSubmit(request, env) {
       checksums[file.path] =
         await sha256Hex(file.content);
     }
+
+    const source =
+      `registry/${component.name}/versions/${component.version}`;
 
     const manifest = {
       name: component.name,
@@ -1229,15 +1326,32 @@ async function handlePublisherSubmit(request, env) {
       runtime: component.runtime,
       license: component.license,
       tags: component.tags,
-      dependencies: component.dependencies,
+      dependencies: resolvedDependencies,
       files: component.files
         .map((f) => f.path)
         .sort(),
-      sha256: checksums,
-      source: `registry/${component.name}`
+      release_notes:
+        component.release_notes ||
+        (existing
+          ? `Release ${component.version}.`
+          : "Initial release."),
+      source
     };
 
-    registry.components.push(manifest);
+    const releaseEntry = { ...manifest, sha256: checksums };
+
+    if (existing) {
+      existing.versions.push(releaseEntry);
+      refreshEntry(existing);
+    } else {
+      const entry = {
+        name: component.name,
+        versions: [releaseEntry]
+      };
+
+      refreshEntry(entry);
+      registry.components.push(entry);
+    }
 
     registry.components.sort(
       (a, b) =>
@@ -1308,7 +1422,7 @@ async function handlePublisherSubmit(request, env) {
 
     treeEntries.push({
       path:
-        `registry/${component.name}/component.json`,
+        `${source}/component.json`,
       mode: "100644",
       type: "blob",
       sha: manifestSha
@@ -1324,7 +1438,7 @@ async function handlePublisherSubmit(request, env) {
 
       treeEntries.push({
         path:
-          `registry/${component.name}/${file.path}`,
+          `${source}/${file.path}`,
         mode: "100644",
         type: "blob",
         sha: blobSha
@@ -1396,7 +1510,7 @@ async function handlePublisherSubmit(request, env) {
       await treeResponse.json();
 
     const branch =
-      `registry/${component.name}-${Date.now()}`;
+      `registry/${component.name}-${component.version}-${Date.now()}`;
 
     const newCommitResponse =
       await githubApi(
@@ -1413,7 +1527,7 @@ async function handlePublisherSubmit(request, env) {
           },
           body: JSON.stringify({
             message:
-              `Add component: ${component.name}`,
+              `${existing ? "Add release" : "Add component"}: ${component.name}@${component.version}`,
             tree: treeData.sha,
             parents: [baseCommitSha]
           })
@@ -1482,9 +1596,9 @@ async function handlePublisherSubmit(request, env) {
           },
           body: JSON.stringify({
             title:
-              `Add component: ${component.name}`,
+              `${existing ? "Add release" : "Add component"}: ${component.name}@${component.version}`,
             body:
-              `## AIRegistry Component\n\n` +
+              `## AIRegistry ${existing ? "Release" : "Component"}\n\n` +
               `Submitted by @${user.login} through AIRegistry.\n\n` +
               `- Component: \`${component.name}\`\n` +
               `- Version: \`${component.version}\`\n` +

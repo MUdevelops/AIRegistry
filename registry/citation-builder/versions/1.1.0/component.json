@@ -1,0 +1,13 @@
+{
+  "name": "citation-builder",
+  "version": "1.1.0",
+  "description": "Format numbered source citations and bibliographies with duplicate merging and stable numbering.",
+  "category": "tool",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["citations", "sources", "rag"],
+  "dependencies": [],
+  "files": ["README.md", "src/citation_builder.py"],
+  "release_notes": "Adds CitationIndex for stable numbering, URL-aware duplicate merging, punctuation and whitespace cleanup, and input validation. bibliography() returns an empty string when there are no sources.",
+  "source": "registry/citation-builder/versions/1.1.0"
+}

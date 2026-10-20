@@ -1,0 +1,13 @@
+{
+  "name": "conversation-memory",
+  "version": "1.1.0",
+  "description": "In-process conversation store with size limit, keyword search, character-budget windows and snapshots.",
+  "category": "memory",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["memory", "chat", "conversation"],
+  "dependencies": [],
+  "files": ["README.md", "src/conversation_memory.py"],
+  "release_notes": "Monotonic message ids, copy-on-read, window() for context budgets, extend(), to_dict()/from_dict() snapshots, Unicode-aware search and an injectable clock. Backward compatible with 1.0.0.",
+  "source": "registry/conversation-memory/versions/1.1.0"
+}

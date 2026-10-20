@@ -26,47 +26,39 @@ The web publisher validates the submission and creates a Pull Request for mainta
 
 ## Component structure
 
-A component must live at:
+Every release lives in its own directory and is immutable once merged:
 
 ```text
-registry/<name>/
+registry/<name>/versions/<version>/
 ├── component.json
 ├── README.md
 └── src/
-    └── <implementation>
+    └── <implementation>.py
 ```
 
-The current publisher expects:
+`component.json` must contain `name`, `version`, `description` (280 characters or less), `category`, `runtime`, `license`, `tags`, `dependencies`, `files`, `release_notes` and `source` (`registry/<name>/versions/<version>`). The directory names must match `name` and `version`.
 
-- a lowercase component name using letters, digits, and hyphens
-- a `MAJOR.MINOR.PATCH` version
-- a description of 280 characters or less
-- a valid category, runtime, and license
-- up to 12 tags
-- up to 20 dependencies
-- at least two files total
-- `README.md`
-- at least one file under `src/`
-- unique, safe relative file paths
-- text files within the publisher size limits
+Rules the builder enforces:
 
-Do not include executable installers, shell scripts, credentials, tokens, private keys, or generated build/cache artifacts.
+- lowercase name using letters, digits and hyphens; `MAJOR.MINOR.PATCH` version
+- `files` lists every file in the release (nothing unlisted), including `README.md` and at least one file under `src/`
+- dependencies are exact references, for example `keyword-rag@1.1.0` or `keyword-rag@1.1.0 (optional)`, and must exist in the registry
+- Python sources must compile; files must not be empty
+- unique, safe relative file paths and no executables, installers, credentials or build artifacts
 
-## Component design guidelines
+To publish a **new version**, add a new `versions/<version>/` directory. Never edit a published release; fixes ship as a new version.
+
+## Component quality bar
 
 Prefer one clear responsibility over a broad framework.
 
-Avoid network calls during import unless the component's documented purpose requires them.
-
-Avoid install scripts and hidden side effects.
-
-Use the Python standard library when it keeps the component portable and understandable.
-
-Document the public API and provide a minimal usage example.
-
-Declare AIRegistry component dependencies in `component.json` rather than silently assuming they exist.
-
-Only submit code and assets that you have the right to redistribute.
+- Standard library only, Python 3.9+ compatible (`from __future__ import annotations` for modern type hints).
+- Module docstring, `__all__`, `__version__` matching the release, type hints and docstrings on public functions.
+- Validate inputs and raise `TypeError`/`ValueError` with clear messages. No network calls or side effects at import time.
+- A README with **Install**, **Quick start**, **API** and **Behavior** sections, including `ai add <name>@<version>`.
+- Tests in `tests/` covering normal use, edge cases and invalid input.
+- Declare AIRegistry dependencies in `component.json` instead of assuming they exist, and mark them `(optional)` when the component works without them.
+- Only submit code you have the right to redistribute.
 
 ## Local validation
 
@@ -74,7 +66,7 @@ From the repository root:
 
 ```bash
 python scripts/build_registry.py --check
-python -m unittest discover -s tests -v
+python -W error -m unittest discover -s tests -v
 python -m py_compile ai.py scripts/build_registry.py
 node --check website/app.js
 node --check cloudflare/worker.js
@@ -103,7 +95,7 @@ Maintainers may request changes before merging. Passing CI is required, but CI p
 
 ## Release and generated files
 
-Do not manually edit `registry.json` or `website/registry.json` to add a component. These indexes are generated from the component directories.
+Do not edit `registry.json` or `website/registry.json` by hand. They are generated from the release directories.
 
 Do not commit local deployment state such as `.wrangler/`, Python `__pycache__/` directories, compiled `.pyc` files, or local installation directories.
 

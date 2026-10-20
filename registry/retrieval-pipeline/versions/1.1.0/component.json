@@ -1,0 +1,13 @@
+{
+  "name": "retrieval-pipeline",
+  "version": "1.1.0",
+  "description": "Compose a retriever and a context builder into one validated workflow that returns bounded AI-ready context.",
+  "category": "workflow",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["rag", "pipeline", "retrieval"],
+  "dependencies": ["context-builder@1.1.0 (optional)", "keyword-rag@1.1.0 (optional)", "query-rewriter@1.1.0 (optional)"],
+  "files": ["README.md", "src/retrieval_pipeline.py"],
+  "release_notes": "First importable release. 1.0.0 shipped a source file with a stray markdown fence and was withdrawn. Adds RetrievalPipeline, RetrievalResult, optional query rewriting and on_empty handling; keeps build_retrieval_context.",
+  "source": "registry/retrieval-pipeline/versions/1.1.0"
+}

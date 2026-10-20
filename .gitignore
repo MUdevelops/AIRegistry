@@ -1,5 +1,9 @@
 __pycache__/
+*.pyc
 ai_components/
 .airegistry/
-
 .wrangler/
+node_modules/
+*.egg-info/
+build/
+dist/

@@ -1,0 +1,13 @@
+{
+  "name": "prompt-builder",
+  "version": "1.1.0",
+  "description": "Build reusable prompts from system, instruction, context and input sections with safe placeholder filling.",
+  "category": "prompt",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["prompt", "template", "llm"],
+  "dependencies": [],
+  "files": ["README.md", "src/prompt_builder.py"],
+  "release_notes": "Single-pass placeholder substitution, optional strict mode, render() for mapping-based variables, input type checks, and placeholder filling in the system message. Backward compatible with 1.0.0.",
+  "source": "registry/prompt-builder/versions/1.1.0"
+}
