@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="t d">
+  <title id="t">pip install airegistry-cli</title>
+  <desc id="d">An animated terminal window typing the command pip install airegistry-cli.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07111f"/><stop offset=".55" stop-color="#10122b"/><stop offset="1" stop-color="#071a28"/></linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1b2e"/><stop offset="1" stop-color="#08111e"/></linearGradient>
+    <linearGradient id="neon" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00e5ff"><animate attributeName="stop-color" values="#00e5ff;#8b5cf6;#22d3ee;#00e5ff" dur="8s" repeatCount="indefinite"/></stop>
+      <stop offset=".5" stop-color="#8b5cf6"><animate attributeName="stop-color" values="#8b5cf6;#ec4899;#00e5ff;#8b5cf6" dur="8s" repeatCount="indefinite"/></stop>
+      <stop offset="1" stop-color="#67e8f9"><animate attributeName="stop-color" values="#67e8f9;#00e5ff;#a78bfa;#67e8f9" dur="8s" repeatCount="indefinite"/></stop>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00e5ff" stop-opacity="0"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".9"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient>
+    <radialGradient id="halo"><stop offset="0" stop-color="#7c3aed" stop-opacity=".35"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#7dd3fc" stroke-opacity=".08"/></pattern>
+    <filter id="glow" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <clipPath id="outer"><rect x="1" y="1" width="1198" height="318" rx="26"/></clipPath>
+    <clipPath id="panelClip"><rect x="60" y="34" width="1080" height="252" rx="20"/></clipPath>
+    <clipPath id="type"><rect x="150.0" y="110" width="0" height="100"><animate attributeName="width" values="0.0;32.1;64.3;96.4;128.6;160.7;192.9;225.0;257.1;289.3;321.4;353.6;385.7;417.9;450.0;482.1;514.3;546.4;578.6;610.7;642.9;675.0;707.1;739.3;771.4;803.6;835.7;867.9;900.0;900.0;0" keyTimes="0;0.0507;0.0614;0.0721;0.0829;0.0936;0.1043;0.115;0.1257;0.1364;0.1471;0.1579;0.1686;0.1793;0.19;0.2007;0.2114;0.2221;0.2329;0.2436;0.2543;0.265;0.2757;0.2864;0.2971;0.3079;0.3186;0.3293;0.34;0.93;1.0" calcMode="discrete" dur="9s" repeatCount="indefinite"/></rect></clipPath>
+  </defs>
+  <g clip-path="url(#outer)">
+    <rect width="1200" height="320" fill="url(#bg)"/>
+    <rect width="1200" height="320" fill="url(#grid)"/>
+    <ellipse cx="600" cy="160" rx="520" ry="150" fill="url(#halo)"><animate attributeName="opacity" values=".55;1;.55" dur="5s" repeatCount="indefinite"/></ellipse>
+    <g fill="none" stroke="url(#neon)" stroke-width="1.5" opacity=".6">
+      <path d="M0 52H30L46 68H60"/><path d="M1200 52H1170L1154 68H1140"/><path d="M0 268H30L46 252H60"/><path d="M1200 268H1170L1154 252H1140"/>
+    </g>
+    <!-- terminal window -->
+    <rect x="60" y="34" width="1080" height="252" rx="20" fill="url(#panel)" stroke="url(#neon)" stroke-width="2"/>
+    <g clip-path="url(#panelClip)">
+      <rect x="60" y="34" width="1080" height="48" fill="#0b1a2c"/>
+      <path d="M60 82H1140" stroke="#7dd3fc" stroke-opacity=".15"/>
+      <rect x="-300" y="34" width="260" height="252" fill="url(#beam)" opacity=".08"><animateTransform attributeName="transform" type="translate" values="0 0;1700 0" dur="6s" repeatCount="indefinite"/></rect>
+    </g>
+    <circle cx="94" cy="58" r="7" fill="#ff5f57"/><circle cx="120" cy="58" r="7" fill="#febc2e"/><circle cx="146" cy="58" r="7" fill="#28c840"/>
+    <text x="600" y="64" text-anchor="middle" fill="#8aa0c4" font-family="Inter,Segoe UI,Helvetica,Arial,sans-serif" font-size="15" font-weight="600" letter-spacing="2">INSTALL IN ONE LINE</text>
+    <g transform="translate(1058 49)"><rect width="64" height="20" rx="10" fill="#22c55e" fill-opacity=".14" stroke="#4ade80" stroke-opacity=".7"/><circle cx="14" cy="10" r="3.2" fill="#4ade80"><animate attributeName="opacity" values="1;.3;1" dur="1.8s" repeatCount="indefinite"/></circle><text x="36" y="14" text-anchor="middle" fill="#bbf7d0" font-family="Inter,Segoe UI,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="1">PyPI</text></g>
+    <!-- command (faint ghost + typed) -->
+    <g font-family="SFMono-Regular,Consolas,'Liberation Mono',Menlo,Courier,monospace" font-size="54" font-weight="700">
+      <text x="150.0" y="178" textLength="900.0" lengthAdjust="spacingAndGlyphs" fill="#1b2b44">$ pip install airegistry-cli</text>
+      <g clip-path="url(#type)" filter="url(#glow)">
+        <text x="150.0" y="178" textLength="900.0" lengthAdjust="spacingAndGlyphs"><tspan fill="#4ade80">$</tspan><tspan fill="#e6f7ff"> pip install </tspan><tspan fill="url(#neon)">airegistry-cli</tspan></text>
+      </g>
+    </g>
+    <rect x="150.0" y="132" width="18" height="56" rx="3" fill="#67e8f9" filter="url(#glow)">
+      <animate attributeName="x" values="150.0;182.1;214.3;246.4;278.6;310.7;342.9;375.0;407.1;439.3;471.4;503.6;535.7;567.9;600.0;632.1;664.3;696.4;728.6;760.7;792.9;825.0;857.1;889.3;921.4;953.6;985.7;1017.9;1050.0;1050.0;150.0" keyTimes="0;0.0507;0.0614;0.0721;0.0829;0.0936;0.1043;0.115;0.1257;0.1364;0.1471;0.1579;0.1686;0.1793;0.19;0.2007;0.2114;0.2221;0.2329;0.2436;0.2543;0.265;0.2757;0.2864;0.2971;0.3079;0.3186;0.3293;0.34;0.93;1.0" calcMode="discrete" dur="9s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+    </rect>
+    <!-- chips -->
+    <g transform="translate(333 218)" font-family="Inter,Segoe UI,Helvetica,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="1.4" text-anchor="middle">
+      <rect width="150" height="34" rx="17" fill="#00d9ff" fill-opacity=".12" stroke="#00d9ff" stroke-opacity=".75"/><text x="75" y="22" fill="#a5f3fc">PYTHON 3.9+</text>
+      <rect x="166" width="170" height="34" rx="17" fill="#8b5cf6" fill-opacity=".12" stroke="#a78bfa" stroke-opacity=".8"/><text x="251" y="22" fill="#ddd6fe">CHECKSUM VERIFIED</text>
+      <rect x="352" width="182" height="34" rx="17" fill="#22c55e" fill-opacity=".10" stroke="#4ade80" stroke-opacity=".7"/><text x="443" y="22" fill="#bbf7d0">ZERO DEPENDENCIES</text>
+    </g>
+    <path d="M60 286H1140" stroke="url(#neon)" stroke-width="3" stroke-dasharray="70 18 150 20" opacity=".8"><animate attributeName="stroke-dashoffset" values="0;-258" dur="6s" repeatCount="indefinite"/></path>
+    <rect x="1" y="1" width="1198" height="318" rx="26" fill="none" stroke="url(#neon)" stroke-opacity=".7" stroke-width="1.5"/>
+  </g>
+</svg>
