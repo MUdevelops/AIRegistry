@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.3.1
+
+- Publishing: the CLI is published to PyPI (`pip install airegistry-cli`) with Trusted Publishing.
+- Packaging: SPDX license expression (`license = "MIT"`), as required by current setuptools.
+- Tests: complete the standard-library fallback list so the suite passes on Python 3.9.
+- README: absolute links so the page renders correctly on PyPI.
+
 ## 2.3.0
 
 Catalog and tooling refresh.

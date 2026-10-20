@@ -12,7 +12,7 @@ import sys
 import urllib.parse
 import urllib.request
 
-__version__ = "2.3.0"
+__version__ = "2.3.1"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # Used when the CLI is installed with pip (no registry.json next to ai.py). Component files are
