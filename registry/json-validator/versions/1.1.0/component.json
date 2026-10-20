@@ -1,0 +1,13 @@
+{
+  "name": "json-validator",
+  "version": "1.1.0",
+  "description": "Validate JSON text and return error position, type, keys and readable schema violations.",
+  "category": "validation",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["json", "validation", "schema"],
+  "dependencies": [],
+  "files": ["README.md", "src/json_validator.py"],
+  "release_notes": "Adds enum, additionalProperties, size and range keywords, type lists, NaN/Infinity rejection, bytes input and up-front schema validation. Validity results for 1.0.0 inputs are unchanged; messages now use JSON type names.",
+  "source": "registry/json-validator/versions/1.1.0"
+}

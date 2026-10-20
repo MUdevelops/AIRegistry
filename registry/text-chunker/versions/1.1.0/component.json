@@ -1,0 +1,13 @@
+{
+  "name": "text-chunker",
+  "version": "1.1.0",
+  "description": "Split text into overlapping chunks by characters or words, with optional source offsets.",
+  "category": "text",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["chunking", "text", "rag"],
+  "dependencies": [],
+  "files": ["README.md", "src/text_chunker.py"],
+  "release_notes": "Adds iter_chunks, word-mode offsets in chunk_with_offsets, and strict argument validation. Chunk output for existing calls is unchanged from 1.0.0.",
+  "source": "registry/text-chunker/versions/1.1.0"
+}

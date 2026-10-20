@@ -1,0 +1,13 @@
+{
+  "name": "context-builder",
+  "version": "1.1.0",
+  "description": "Combine retrieved passages into a numbered, size-limited context block for prompts.",
+  "category": "retrieval",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["context", "rag", "prompt"],
+  "dependencies": ["keyword-rag@1.1.0 (optional)"],
+  "files": ["README.md", "src/context_builder.py"],
+  "release_notes": "Accepts plain-string passages, supports a custom retriever and header, exact max_chars budget, argument validation, and no sys.path mutation. keyword-rag is now an optional dependency.",
+  "source": "registry/context-builder/versions/1.1.0"
+}

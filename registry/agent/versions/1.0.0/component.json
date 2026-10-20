@@ -1,0 +1,13 @@
+{
+  "name": "agent",
+  "version": "1.0.0",
+  "description": "Deterministic tool-calling agent loop with a pluggable planner, step records and bounded execution.",
+  "category": "agent",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["agent", "tools", "loop"],
+  "dependencies": ["tool-router@1.1.0 (optional)"],
+  "files": ["README.md", "src/agent.py"],
+  "release_notes": "Replaces the 0.1.0 prototype with run_agent(), structured Step and AgentRun records, error capture, stop_on_error and tool-router support. The prototype run() function is removed.",
+  "source": "registry/agent/versions/1.0.0"
+}

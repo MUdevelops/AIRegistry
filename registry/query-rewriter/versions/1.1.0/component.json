@@ -1,0 +1,13 @@
+{
+  "name": "query-rewriter",
+  "version": "1.1.0",
+  "description": "Deterministic query normalization, stopword removal and keyword variants for retrieval workflows.",
+  "category": "retrieval",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["query", "rag", "text"],
+  "dependencies": [],
+  "files": ["README.md", "src/query_rewriter.py"],
+  "release_notes": "First working release. 1.0.0 imported a module it did not ship and was withdrawn. Provides normalize_query, rewrite_query, extract_keywords and query_variants.",
+  "source": "registry/query-rewriter/versions/1.1.0"
+}

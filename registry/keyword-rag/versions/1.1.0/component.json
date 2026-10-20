@@ -1,0 +1,13 @@
+{
+  "name": "keyword-rag",
+  "version": "1.1.0",
+  "description": "Dependency-free keyword retrieval that ranks documents and returns relevant passages.",
+  "category": "retrieval",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["rag", "retrieval", "search"],
+  "dependencies": [],
+  "files": ["README.md", "src/keyword_rag.py"],
+  "release_notes": "Computes document frequencies once per query, Unicode-aware tokenization, stable tie-breaking by input order, input validation, add_documents() and clear(). Scores are unchanged from 1.0.0.",
+  "source": "registry/keyword-rag/versions/1.1.0"
+}

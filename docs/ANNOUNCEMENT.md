@@ -107,19 +107,19 @@ python ai.py search rag
 Inspect a component:
 
 ```bash
-python ai.py info rag
+python ai.py info keyword-rag
 ```
 
 Preview an installation:
 
 ```bash
-python ai.py add rag --dry-run
+python ai.py add keyword-rag --dry-run
 ```
 
 Install a component:
 
 ```bash
-python ai.py add rag
+python ai.py add keyword-rag
 ```
 
 List installed components:
@@ -235,8 +235,8 @@ Install a component:
 
 ```bash
 python ai.py search rag
-python ai.py info rag
-python ai.py add rag
+python ai.py info keyword-rag
+python ai.py add keyword-rag
 ```
 
 Contribute a component:

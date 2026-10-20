@@ -1,0 +1,13 @@
+{
+  "name": "tool-router",
+  "version": "1.1.0",
+  "description": "Register Python functions as named tools and execute calls safely, returning errors as data.",
+  "category": "tool",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": ["tools", "router", "agent"],
+  "dependencies": [],
+  "files": ["README.md", "src/tool_router.py"],
+  "release_notes": "Adds parameter specs, unregister, introspection helpers, error_type on failures, tool-name validation and a route() path that is safe for arguments named 'name'. Existing result fields are unchanged.",
+  "source": "registry/tool-router/versions/1.1.0"
+}

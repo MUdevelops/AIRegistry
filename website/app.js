@@ -8,6 +8,20 @@ const h = (tag, props = {}, ...children) => {
 };
 
 let all = [];
+
+// A registry entry holds every release in `versions`; merge the latest one so the UI can read
+// m.version, m.files, m.source, ... directly. Flat (legacy) entries pass through unchanged.
+function normalizeComponent(entry) {
+  if (!Array.isArray(entry.versions) || !entry.versions.length) return entry;
+  const latest = entry.versions.find((v) => v.version === entry.latest_version) || entry.versions[0];
+  return { ...latest, ...entry, ...latest, versions: entry.versions, latest_version: latest.version };
+}
+
+function splitDependency(value) {
+  const optional = / \(optional\)$/.test(value);
+  const [name, version = ""] = value.replace(/ \(optional\)$/, "").split("@");
+  return { name, version, optional };
+}
 let cat = "";
 let authUser = null;
 
@@ -69,7 +83,8 @@ function detail(m) {
   const deps = m.dependencies || [];
   const files = m.files || [];
   const sourceUrl = `https://github.com/MUdevelops/AIRegistry/tree/main/${m.source}`;
-  const command = `ai add ${m.name}`;
+  const command = `ai add ${m.name}@${m.version}`;
+  const releases = (m.versions || []).map((v) => v.version);
 
   $("detail").replaceChildren(
     h("div", { className: "detail-shell" },
@@ -100,6 +115,14 @@ function detail(m) {
           )
         )
       ),
+      releases.length > 1 ? h("section", { className: "detail-panel detail-wide" },
+        h("div", { className: "panel-label" }, `RELEASES · ${releases.length}`),
+        h("div", { className: "file-list" }, ...(m.versions || []).map((v) => h("code", { title: v.release_notes || "" }, `${v.version === m.version ? "★ " : ""}${v.version}`)))
+      ) : "",
+      m.release_notes ? h("section", { className: "detail-panel detail-wide" },
+        h("div", { className: "panel-label" }, `RELEASE NOTES · ${m.version}`),
+        h("p", { className: "detail-note" }, m.release_notes)
+      ) : "",
       h("section", { className: "detail-panel detail-wide" },
         h("div", { className: "panel-label" }, `FILES · ${files.length}`),
         h("div", { className: "file-list" }, ...files.map((file) => h("code", {}, file)))
@@ -233,22 +256,33 @@ async function submitComponent(event) {
   const files = collectFiles();
   const dependencies = collectDependencies();
   const currentName = $("component-name").value.trim().toLowerCase();
-  const dependencyNames = dependencies.map((x) => x.replace(/ \(optional\)$/, ""));
+  const parsed = dependencies.map(splitDependency);
+  const dependencyNames = parsed.map((d) => d.name);
 
   if (new Set(dependencyNames).size !== dependencyNames.length) {
     status.textContent = "Duplicate dependencies are not allowed.";
     return;
   }
-  for (const dependency of dependencyNames) {
-    if (dependency === currentName) {
+  for (const dep of parsed) {
+    if (dep.name === currentName) {
       status.textContent = "A component cannot depend on itself.";
       return;
     }
-    if (!all.some((m) => m.name === dependency)) {
-      status.textContent = `Dependency '${dependency}' was not found in the registry.`;
+    const target = all.find((m) => m.name === dep.name);
+    if (!target) {
+      status.textContent = `Dependency '${dep.name}' was not found in the registry.`;
+      return;
+    }
+    if (dep.version && !(target.versions || [target]).some((v) => v.version === dep.version)) {
+      status.textContent = `Dependency '${dep.name}' has no release ${dep.version}.`;
       return;
     }
   }
+  // Pin every dependency to an exact release (plain names resolve to the latest one).
+  const pinnedDependencies = parsed.map((dep) => {
+    const target = all.find((m) => m.name === dep.name);
+    return `${dep.name}@${dep.version || target.version}${dep.optional ? " (optional)" : ""}`;
+  });
 
   if (!files.some((f) => f.path === "README.md")) {
     status.textContent = "README.md is required.";
@@ -270,7 +304,8 @@ async function submitComponent(event) {
     runtime: $("component-runtime").value.trim(),
     license: $("component-license").value.trim(),
     tags: csvTags($("component-tags").value),
-    dependencies,
+    release_notes: $("component-release-notes").value.trim(),
+    dependencies: pinnedDependencies,
     files
   };
 
@@ -329,7 +364,7 @@ $("submit-component")?.addEventListener("click", () => { location.hash = "/submi
 $("add-dependency").onclick = () => addDependency();
 $("add-file").onclick = () => addFile();
 $("submit-form").addEventListener("submit", submitComponent);
-$("copy-command").onclick = () => copyText("ai search rag\nai info rag\nai add rag");
+$("copy-command").onclick = () => copyText("ai search rag\nai info keyword-rag\nai add keyword-rag");
 window.onhashchange = route;
 
 addFile("README.md", "# My Component\n\nDescribe your component here.");
@@ -339,7 +374,7 @@ addDependency();
 fetch(C.REGISTRY_URL || "registry.json", { cache: "no-store" })
   .then((r) => { if (!r.ok) throw new Error("registry"); return r.json(); })
   .then((d) => {
-    all = Array.isArray(d.components) ? d.components : [];
+    all = Array.isArray(d.components) ? d.components.map(normalizeComponent) : [];
     renderStats();
     renderDependencyOptions();
     render();
