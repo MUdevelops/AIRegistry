@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.2
+
+- Documentation: refreshed README with animated SVG sections, absolute image links so it renders on PyPI, and a corrected lock-file description.
+- No code changes to the CLI or the components.
+
 ## 2.3.1
 
 - Publishing: the CLI is published to PyPI (`pip install airegistry-cli`) with Trusted Publishing.
