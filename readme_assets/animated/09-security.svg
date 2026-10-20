@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="26" viewBox="0 0 1200 26" role="img" aria-label="Animated section accent">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f97316" stop-opacity="0"/><stop offset=".18" stop-color="#f97316" stop-opacity=".82"/><stop offset=".5" stop-color="#ef4444"/><stop offset=".82" stop-color="#f97316" stop-opacity=".82"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f97316" stop-opacity="0"/><stop offset=".5" stop-color="#ffffff"/><stop offset="1" stop-color="#ef4444" stop-opacity="0"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <path d="M0 13H1200" fill="none" stroke="url(#g)" stroke-width="1" stroke-opacity=".28"/>
+  <path d="M16 13H1184" fill="none" stroke="url(#g)" stroke-width="1.5" stroke-opacity=".75" stroke-dasharray="3 11 90 15 4 17"><animate attributeName="stroke-dashoffset" values="0;-280;0" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M30 13H1170" fill="none" stroke="url(#beam)" stroke-width="2.3" stroke-dasharray="70 1130" filter="url(#glow)"><animate attributeName="stroke-dashoffset" values="1200;0;-1200" dur="5.5s" repeatCount="indefinite"/></path>
+  <g fill="#f97316" filter="url(#glow)"><circle cx="36" cy="13" r="2.8"><animate attributeName="r" values="2;3.8;2" dur="2.1s" repeatCount="indefinite"/></circle><circle cx="300" cy="13" r="2.1"><animate attributeName="opacity" values=".25;1;.25" dur="2.9s" repeatCount="indefinite"/></circle><circle cx="600" cy="13" r="2.4"><animate attributeName="r" values="2;4;2" dur="2.5s" repeatCount="indefinite"/></circle><circle cx="900" cy="13" r="2.1"><animate attributeName="opacity" values="1;.25;1" dur="2.2s" repeatCount="indefinite"/></circle><circle cx="1164" cy="13" r="2.8"><animate attributeName="r" values="2;3.8;2" dur="2.4s" repeatCount="indefinite"/></circle></g>
+  <path d="M0 13h16l6 -6h28 M1200 13h-16l-6 6h-28" fill="none" stroke="#ef4444" stroke-opacity=".9" stroke-width="1.2"/>
+</svg>
