@@ -8,6 +8,7 @@
   <a href="https://github.com/MUdevelops/AIRegistry/actions/workflows/ci.yml"><img src="https://github.com/MUdevelops/AIRegistry/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <a href="https://github.com/MUdevelops/AIRegistry/releases"><img src="https://img.shields.io/badge/Release-v2.3.1-00d9ff?style=flat-square" alt="v2.3.0"/></a>
   <a href="https://github.com/MUdevelops/AIRegistry/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-8b5cf6?style=flat-square" alt="MIT License"/></a>
+  <a href="https://pypi.org/project/airegistry-cli/"><img src="https://img.shields.io/pypi/v/airegistry-cli?style=flat-square&color=3776ab" alt="PyPI"/></a>
   <img src="https://img.shields.io/badge/Python-%3E%3D3.9-22c55e?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+"/>
   <img src="https://img.shields.io/badge/components-11-111827?style=flat-square" alt="11 components"/>
 </p>
@@ -48,13 +49,13 @@ search -> inspect -> add -> build
 
 ## Quick start
 
-Install the CLI from a checkout:
+Install the CLI from PyPI:
 
 ```bash
-git clone https://github.com/MUdevelops/AIRegistry.git
-cd AIRegistry
-python -m pip install .
+pip install airegistry-cli
 ```
+
+Or from source: `git clone https://github.com/MUdevelops/AIRegistry.git`, then `python -m pip install .` inside the folder.
 
 Then, in your own project:
 
