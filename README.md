@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="readme_assets/animated/hero.svg" alt="AIRegistry — Install AI capabilities, not libraries" width="100%" />
+  <img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/hero.svg" alt="AIRegistry — Install AI capabilities, not libraries" width="100%" />
   <p><strong>A dependency-free CLI and versioned registry for reusable AI building blocks.</strong></p>
   <p>
     <a href="https://github.com/MUdevelops/AIRegistry/actions/workflows/ci.yml"><img src="https://github.com/MUdevelops/AIRegistry/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status" /></a>
@@ -12,8 +12,8 @@
   </p>
   <p>
     <a href="https://airegistry.instantregret96.workers.dev"><strong>🌐 Live Registry</strong></a> ·
-    <a href="#quick-start">⚡ Quick Start</a> ·
-    <a href="#component-catalog">🧩 Components</a> ·
+    <a href="#-quick-start">⚡ Quick Start</a> ·
+    <a href="#-component-catalog">🧩 Components</a> ·
     <a href="https://github.com/MUdevelops/AIRegistry/issues">🐛 Issues</a> ·
     <a href="https://github.com/MUdevelops/AIRegistry/blob/main/CONTRIBUTING.md">🤝 Contribute</a>
   </p>
@@ -23,7 +23,7 @@
 
 ## ✨ What is AIRegistry?
 
-<p align="center"><img src="readme_assets/animated/01-overview.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/01-overview.svg" alt="Overview" width="100%" /></p>
 
 AI projects often rebuild the same small pieces: retrievers, text chunkers, prompt builders, conversation memory, validators, citations, tool routers, and agent loops.
 
@@ -37,7 +37,7 @@ search  →  inspect  →  add  →  build
 
 ## 🚀 Why AIRegistry?
 
-<p align="center"><img src="readme_assets/animated/02-why.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/02-why.svg" alt="Why AIRegistry" width="100%" /></p>
 
 | Capability | How it helps |
 |---|---|
@@ -51,12 +51,12 @@ search  →  inspect  →  add  →  build
 
 ## ⚡ Quick start
 
-<p align="center"><img src="readme_assets/animated/03-quick-start.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/03-quick-start.svg" alt="Quick start" width="100%" /></p>
 
 ### 1. Install the CLI
 
 <p align="center">
-  <img src="readme_assets/animated/pip-install.svg" alt="pip install airegistry-cli" width="100%" />
+  <img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/pip-install.svg" alt="pip install airegistry-cli" width="100%" />
 </p>
 
 <p align="center"><sub>Copy-paste version (the safest form, it always targets the Python you run):</sub></p>
@@ -105,9 +105,9 @@ python -m pip install .
 
 ## 🧪 Use a component in your Python project
 
-<p align="center"><img src="readme_assets/animated/04-python-usage.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/04-python-usage.svg" alt="Using a component in Python" width="100%" /></p>
 
-By default, components are copied to `ai_components/<name>/`. Change that destination with `--dir`. Install records and integrity metadata are stored in `.airegistry/lock.json`.
+By default, components are copied to `ai_components/<name>/`. Change that destination with `--dir`. Install records (component, version, directory and files) are stored in `.airegistry/lock.json`.
 
 For example, after adding `keyword-rag`:
 
@@ -131,7 +131,7 @@ AIRegistry components provide building blocks, not a hosted AI model. For semant
 
 ## 🗂️ Component catalog
 
-<p align="center"><img src="readme_assets/animated/05-catalog.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/05-catalog.svg" alt="Component catalog" width="100%" /></p>
 
 The registry currently documents **11 components** across retrieval, memory, agents, prompts, text processing, tools, validation, and workflow composition.
 
@@ -155,7 +155,7 @@ Browse the full catalog in the **[Live Registry](https://airegistry.instantregre
 
 ## 🔗 Compose components into a workflow
 
-<p align="center"><img src="readme_assets/animated/06-composition.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/06-composition.svg" alt="Component composition" width="100%" /></p>
 
 Combine small pieces into a larger pipeline while keeping each part independently inspectable:
 
@@ -171,7 +171,7 @@ This is a conceptual composition map; each component can also be installed and u
 
 ## 📦 How the registry is structured
 
-<p align="center"><img src="readme_assets/animated/07-structure.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/07-structure.svg" alt="Registry structure" width="100%" /></p>
 
 Each component has a versioned directory containing its manifest, documentation, and source code:
 
@@ -205,7 +205,7 @@ Published releases are immutable. Bug fixes and improvements should be released 
 
 ## 🤝 Community publishing
 
-<p align="center"><img src="readme_assets/animated/08-community.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/08-community.svg" alt="Community publishing" width="100%" /></p>
 
 AIRegistry uses a review-first submission path:
 
@@ -229,7 +229,7 @@ Read [`CONTRIBUTING.md`](https://github.com/MUdevelops/AIRegistry/blob/main/CONT
 
 ## 🛡️ Security model
 
-<p align="center"><img src="readme_assets/animated/09-security.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/09-security.svg" alt="Security model" width="100%" /></p>
 
 Registry entries and community submissions must be treated as **untrusted input**. The CLI is designed to validate paths and checksums, reject executable file types, and avoid running installed component code.
 
@@ -237,7 +237,7 @@ Before using a component in a sensitive environment, review its source and permi
 
 ## 🧑‍💻 Development and checks
 
-<p align="center"><img src="readme_assets/animated/10-development.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/10-development.svg" alt="Development checks" width="100%" /></p>
 
 Run the project checks from the repository root:
 
@@ -258,11 +258,9 @@ Useful operational documentation:
 
 ## 📄 License
 
-<p align="center"><img src="readme_assets/animated/11-license.svg" alt="" width="100%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/animated/11-license.svg" alt="MIT license" width="100%" /></p>
 
 AIRegistry is released under the **MIT License**. See [`LICENSE`](https://github.com/MUdevelops/AIRegistry/blob/main/LICENSE) for the complete text.
-
-<p align="center"><sub>Visual system: custom animated SVGs · No GIF assets · Lightweight, source-controlled, and easy to customize.</sub></p>
 
 ---
 
