@@ -61,7 +61,7 @@ class TestRealRegistry(unittest.TestCase):
 
     def test_components_are_stdlib_only(self):
         stdlib = set(getattr(__import__("sys"), "stdlib_module_names", ())) | {
-            "__future__", "collections", "dataclasses", "importlib", "json", "math", "pathlib", "re",
+            "__future__", "abc", "argparse", "collections", "contextlib", "copy", "dataclasses", "datetime", "enum", "functools", "hashlib", "importlib", "io", "itertools", "json", "math", "operator", "os", "pathlib", "re", "shutil", "sys", "tempfile", "textwrap", "urllib",
             "string", "time", "typing", "unicodedata",
         }
         allowed_local = {"keyword_rag"}  # optional sibling lookup inside context-builder
