@@ -235,6 +235,45 @@
    ]
   },
   {
+   "category": "tool",
+   "description": "Test component for the publisher flow.",
+   "latest_version": "0.0.1",
+   "license": "MIT",
+   "name": "hello-test",
+   "runtime": "python",
+   "tags": [
+    "demo",
+    "test"
+   ],
+   "versions": [
+    {
+     "category": "tool",
+     "dependencies": [
+      "keyword-rag@1.1.0"
+     ],
+     "description": "Test component for the publisher flow.",
+     "files": [
+      "README.md",
+      "src/main.py"
+     ],
+     "license": "MIT",
+     "name": "hello-test",
+     "release_notes": "Publisher smoke test.",
+     "runtime": "python",
+     "sha256": {
+      "README.md": "8031e84749f180cbc1c05ab74b1cfca79d29a1f89be1b1cf81462772fff096b5",
+      "src/main.py": "585c93666fcb046b7b264d3fa73202aa2a38254ae82a4b3ba19e873c2d5a9886"
+     },
+     "source": "registry/hello-test/versions/0.0.1",
+     "tags": [
+      "demo",
+      "test"
+     ],
+     "version": "0.0.1"
+    }
+   ]
+  },
+  {
    "category": "validation",
    "description": "Validate JSON text and return error position, type, keys and readable schema violations.",
    "latest_version": "1.1.0",

@@ -1,0 +1,21 @@
+{
+  "name": "hello-test",
+  "version": "0.0.1",
+  "description": "Test component for the publisher flow.",
+  "category": "tool",
+  "runtime": "python",
+  "license": "MIT",
+  "tags": [
+    "demo",
+    "test"
+  ],
+  "dependencies": [
+    "keyword-rag@1.1.0"
+  ],
+  "files": [
+    "README.md",
+    "src/main.py"
+  ],
+  "release_notes": "Publisher smoke test.",
+  "source": "registry/hello-test/versions/0.0.1"
+}
