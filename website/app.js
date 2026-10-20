@@ -364,7 +364,7 @@ $("submit-component")?.addEventListener("click", () => { location.hash = "/submi
 $("add-dependency").onclick = () => addDependency();
 $("add-file").onclick = () => addFile();
 $("submit-form").addEventListener("submit", submitComponent);
-$("copy-command").onclick = () => copyText("ai search rag\nai info keyword-rag\nai add keyword-rag");
+$("copy-command").onclick = () => copyText("pip install airegistry-cli\nai search rag\nai info keyword-rag\nai add keyword-rag");
 window.onhashchange = route;
 
 addFile("README.md", "# My Component\n\nDescribe your component here.");
