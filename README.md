@@ -1,13 +1,13 @@
 <div align="center">
 
-<img src="./readme_assets/Animated-Header.gif" alt="AIRegistry animated header" width="100%"/>
+<img src="https://raw.githubusercontent.com/MUdevelops/AIRegistry/main/readme_assets/Animated-Header.gif" alt="AIRegistry animated header" width="100%"/>
 
 <br/>
 
 <p>
   <a href="https://github.com/MUdevelops/AIRegistry/actions/workflows/ci.yml"><img src="https://github.com/MUdevelops/AIRegistry/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
-  <a href="https://github.com/MUdevelops/AIRegistry/releases"><img src="https://img.shields.io/badge/Release-v2.3.0-00d9ff?style=flat-square" alt="v2.3.0"/></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-8b5cf6?style=flat-square" alt="MIT License"/></a>
+  <a href="https://github.com/MUdevelops/AIRegistry/releases"><img src="https://img.shields.io/badge/Release-v2.3.1-00d9ff?style=flat-square" alt="v2.3.0"/></a>
+  <a href="https://github.com/MUdevelops/AIRegistry/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-8b5cf6?style=flat-square" alt="MIT License"/></a>
   <img src="https://img.shields.io/badge/Python-%3E%3D3.9-22c55e?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+"/>
   <img src="https://img.shields.io/badge/components-11-111827?style=flat-square" alt="11 components"/>
 </p>
@@ -22,8 +22,8 @@
 <p>
   <a href="https://airegistry.instantregret96.workers.dev">Live registry</a> ·
   <a href="https://github.com/MUdevelops/AIRegistry/issues">Issues</a> ·
-  <a href="./CONTRIBUTING.md">Contributing</a> ·
-  <a href="./CHANGELOG.md">Changelog</a>
+  <a href="https://github.com/MUdevelops/AIRegistry/blob/main/CONTRIBUTING.md">Contributing</a> ·
+  <a href="https://github.com/MUdevelops/AIRegistry/blob/main/CHANGELOG.md">Changelog</a>
 </p>
 
 </div>
@@ -86,17 +86,17 @@ Without `pip`, run the CLI directly: `python ai.py search rag`. In a checkout, t
 
 | Component | Latest | Category | What it does |
 |---|---:|---|---|
-| [`agent`](./registry/agent/versions/1.0.0/README.md) | `1.0.0` | agent | Deterministic tool-calling agent loop with a pluggable planner, step records and bounded execution. |
-| [`citation-builder`](./registry/citation-builder/versions/1.1.0/README.md) | `1.1.0` | tool | Format numbered source citations and bibliographies with duplicate merging and stable numbering. |
-| [`context-builder`](./registry/context-builder/versions/1.1.0/README.md) | `1.1.0` | retrieval | Combine retrieved passages into a numbered, size-limited context block for prompts. |
-| [`conversation-memory`](./registry/conversation-memory/versions/1.1.0/README.md) | `1.1.0` | memory | In-process conversation store with size limit, keyword search, character-budget windows and snapshots. |
-| [`json-validator`](./registry/json-validator/versions/1.1.0/README.md) | `1.1.0` | validation | Validate JSON text and return error position, type, keys and readable schema violations. |
-| [`keyword-rag`](./registry/keyword-rag/versions/1.1.0/README.md) | `1.1.0` | retrieval | Dependency-free keyword retrieval that ranks documents and returns relevant passages. |
-| [`prompt-builder`](./registry/prompt-builder/versions/1.1.0/README.md) | `1.1.0` | prompt | Build reusable prompts from system, instruction, context and input sections with safe placeholder filling. |
-| [`query-rewriter`](./registry/query-rewriter/versions/1.1.0/README.md) | `1.1.0` | retrieval | Deterministic query normalization, stopword removal and keyword variants for retrieval workflows. |
-| [`retrieval-pipeline`](./registry/retrieval-pipeline/versions/1.1.0/README.md) | `1.1.0` | workflow | Compose a retriever and a context builder into one validated workflow that returns bounded AI-ready context. |
-| [`text-chunker`](./registry/text-chunker/versions/1.1.0/README.md) | `1.1.0` | text | Split text into overlapping chunks by characters or words, with optional source offsets. |
-| [`tool-router`](./registry/tool-router/versions/1.1.0/README.md) | `1.1.0` | tool | Register Python functions as named tools and execute calls safely, returning errors as data. |
+| [`agent`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/agent/versions/1.0.0/README.md) | `1.0.0` | agent | Deterministic tool-calling agent loop with a pluggable planner, step records and bounded execution. |
+| [`citation-builder`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/citation-builder/versions/1.1.0/README.md) | `1.1.0` | tool | Format numbered source citations and bibliographies with duplicate merging and stable numbering. |
+| [`context-builder`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/context-builder/versions/1.1.0/README.md) | `1.1.0` | retrieval | Combine retrieved passages into a numbered, size-limited context block for prompts. |
+| [`conversation-memory`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/conversation-memory/versions/1.1.0/README.md) | `1.1.0` | memory | In-process conversation store with size limit, keyword search, character-budget windows and snapshots. |
+| [`json-validator`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/json-validator/versions/1.1.0/README.md) | `1.1.0` | validation | Validate JSON text and return error position, type, keys and readable schema violations. |
+| [`keyword-rag`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/keyword-rag/versions/1.1.0/README.md) | `1.1.0` | retrieval | Dependency-free keyword retrieval that ranks documents and returns relevant passages. |
+| [`prompt-builder`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/prompt-builder/versions/1.1.0/README.md) | `1.1.0` | prompt | Build reusable prompts from system, instruction, context and input sections with safe placeholder filling. |
+| [`query-rewriter`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/query-rewriter/versions/1.1.0/README.md) | `1.1.0` | retrieval | Deterministic query normalization, stopword removal and keyword variants for retrieval workflows. |
+| [`retrieval-pipeline`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/retrieval-pipeline/versions/1.1.0/README.md) | `1.1.0` | workflow | Compose a retriever and a context builder into one validated workflow that returns bounded AI-ready context. |
+| [`text-chunker`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/text-chunker/versions/1.1.0/README.md) | `1.1.0` | text | Split text into overlapping chunks by characters or words, with optional source offsets. |
+| [`tool-router`](https://github.com/MUdevelops/AIRegistry/blob/main/registry/tool-router/versions/1.1.0/README.md) | `1.1.0` | tool | Register Python functions as named tools and execute calls safely, returning errors as data. |
 
 Every component is stdlib-only, typed, documented and covered by tests. Dependencies between components are optional and exact; `ai add` shows them but never installs them automatically. Typical composition:
 
