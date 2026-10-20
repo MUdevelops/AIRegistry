@@ -18,6 +18,7 @@
     <a href="https://github.com/MUdevelops/AIRegistry/blob/main/CONTRIBUTING.md">🤝 Contribute</a>
   </p>
 </div>
+
 ---
 
 ## ✨ What is AIRegistry?
@@ -53,6 +54,12 @@ search  →  inspect  →  add  →  build
 <p align="center"><img src="readme_assets/animated/03-quick-start.svg" alt="" width="100%" /></p>
 
 ### 1. Install the CLI
+
+<p align="center">
+  <img src="readme_assets/animated/pip-install.svg" alt="pip install airegistry-cli" width="100%" />
+</p>
+
+<p align="center"><sub>Copy-paste version (the safest form, it always targets the Python you run):</sub></p>
 
 ```bash
 python -m pip install airegistry-cli
